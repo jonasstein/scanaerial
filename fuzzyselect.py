@@ -34,13 +34,13 @@ lon = float(sys.argv[1])  #  (format is decimal, for SAS-planet go to Settings a
 dlat = 0.02                     # default values for proportion of requested image
 dlon = 0.04                     # default values for proportion of requested image
            
-douglas_peucker_epsilon = 0.45   # smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
+douglas_peucker_epsilon = 0.60   # smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
 color_str = 32                  # sensivity for color change, bigger = larger area covered = 20-23-25 is ok
 tile_size = (256, 256)
 #josm_string = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
 josm_string = "http://wms.latlon.org/?layers=bing&"
 
-zoom = 13
+zoom = 17
 proj = "EPSG:3857"
 
 
