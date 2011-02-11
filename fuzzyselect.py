@@ -43,9 +43,14 @@ lon = float(sys.argv[1])
 
 dlat = 0.02                     # default values for proportion of requested image
 dlon = 0.04                     # default values for proportion of requested image
-           
-douglas_peucker_epsilon = 0.60   # smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
-color_str = 32                  # sensivity for color change, bigger = larger area covered = 20-23-25 is ok
+
+# smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
+douglas_peucker_epsilon = 0.60  
+
+# sensivity for color change, bigger = larger area covered = 20-23-25 is ok
+color_str = 32                  
+
+
 tile_size = (256, 256)
 #josm_string = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
 josm_string = "http://wms.latlon.org/?layers=bing&"
