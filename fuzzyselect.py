@@ -50,13 +50,15 @@ dlon = 0.04
 douglas_peucker_epsilon = 0.60  
 
 # sensivity for color change, bigger = larger area covered = 20-23-25 is ok
-color_str = 32                  
+color_str = 30                  
 
-tile_size = (256, 256)
+# tile_size = (256, 256)
+tile_size = (512, 512)
 #wms_server_url = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
 wms_server_url = "http://wms.latlon.org/?layers=bing&"
 
-zoom = 17
+
+zoom = 14
 proj = "EPSG:3857"
 
 polygon_tags = {"source":"Bing Imagery traced by fuzzer",}
@@ -166,7 +168,9 @@ def point_line_distance(p0, p1, p2):
         return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / ((x2-x1)**2 + (y2-y1)**2)**0.5
 
 def douglas_peucker(nodes, epsilon):
-    #print "Running DP on %d nodes" % len(nodes)
+    """ makes a linear curve smoother see also 
+    http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
+    """
     farthest_node = None                        
     farthest_dist = 0                           
     first = nodes[0]                            
@@ -181,11 +185,9 @@ def douglas_peucker(nodes, epsilon):
     if farthest_dist > epsilon:
         seg_a = douglas_peucker(nodes[0:farthest_node+1], epsilon)
         seg_b = douglas_peucker(nodes[farthest_node:-1], epsilon) 
-        #print "Minimized %d nodes to %d + %d nodes" % (len(nodes), len(seg_a), len(seg_b))
-        nodes = seg_a[:-1] + seg_b                                                         
-    else:                                                                                  
-        return [nodes[0], nodes[-1]]                                                       
-
+        nodes = seg_a[:-1] + seg_b
+    else:
+        return [nodes[0], nodes[-1]]
     return nodes
 
 ############## End of copypaste
