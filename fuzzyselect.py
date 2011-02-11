@@ -75,8 +75,10 @@ web = WmsCanvas(wms_server_url, proj, zoom, tile_size, mode = "RGB")
 
 
 def distance(a, b):
-#debug((a,b))
-    return sqrt((a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2)             
+    """
+    """
+#    debug((a, b))
+    return sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)             
 
 
 black = 0
