@@ -11,7 +11,6 @@ __status__ = "Development"
 
 
 import datetime
-# whole_time = datetime.datetime.now()
 import os, sys, urllib2,  math, ImageDraw
 
 from canvas import WmsCanvas
@@ -30,8 +29,7 @@ def debug(st):
     sys.stderr.flush()
 
 
-
-
+whole_time = datetime.datetime.now()
 
 lat = float(sys.argv[2])  
 # Coordinates from command string. 
@@ -281,4 +279,4 @@ if way_num < -1:
     osmcode.write( '</relation>')
 osmcode.write("</osm>")
 osmcode.flush()
-# debug("All done in: %s" % str(datetime.datetime.now() - whole_time) )  
+debug("All done in: %s" % str(datetime.datetime.now() - whole_time) )  
