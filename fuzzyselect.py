@@ -207,7 +207,7 @@ outline = []
 
 popped = False
 lin = []
-dir_names = ("^", ">", "v", "<")
+
 tz = datetime.now()
 
 while normales_list:
@@ -288,4 +288,4 @@ if way_num < -1:
     osmcode.write( '</relation>')
 osmcode.write("</osm>")
 osmcode.flush()
-debug("All done in: %s" % str(datetime.now() - WHOLE_TIME) )  
+debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP) )  
