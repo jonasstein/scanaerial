@@ -158,8 +158,8 @@ if True:
 
 
 ######## Copypasted from lakewalker
-def point_line_distance(p0, p1, p2):
-    ((x0, y0), (x1, y1), (x2, y2)) = (p0, p1, p2)
+def point_line_distance(P0, P1, P2):
+    ((x0, y0), (x1, y1), (x2, y2)) = (P0, P1, P2)
 
     if (x2 == x1 and y2 == y1):
         # Degenerate cast: the "line" is actually a point.
@@ -171,6 +171,7 @@ def point_line_distance(p0, p1, p2):
 def douglas_peucker(nodes, epsilon):
     """ makes a linear curve smoother see also 
     http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
+
     """
     farthest_node = None                        
     farthest_dist = 0                           
