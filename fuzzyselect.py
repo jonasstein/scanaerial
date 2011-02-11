@@ -10,10 +10,8 @@ __maintainer__ = "Jonas Stein"
 __status__ = "Development"
 
 
-import datetime
-# import os, sys, urllib2,  math, ImageDraw # unused
-#from math import sqrt # rewrite these soon
-import sys
+from datetime import datetime
+from sys import stderr, argv, stdout, setrecursionlimit
 
 from canvas import WmsCanvas
 
@@ -28,8 +26,8 @@ except ImportError:
 def debug(debug_var):
     """write things to stderr
     """
-    sys.stderr.write(str(debug_var)+"\n")
-    sys.stderr.flush()
+    stderr.write(str(debug_var)+"\n")
+    stderr.flush()
 
 
 def distance(a, b):
@@ -38,17 +36,11 @@ def distance(a, b):
 #    debug((a, b))
     return  ((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)**0.5
 
-whole_time = datetime.datetime.now()
-
-lat = float(sys.argv[2])  
-# Coordinates from command string. 
-# You can use SAS-Planet: click right mouse button on center of forest.
-
-lon = float(sys.argv[1])  
-#  (format is decimal, for SAS-planet go to Settings and set'em there as --d.
-
+whole_time = datetime.now()
 
 #========================================
+# User configuration START
+#
 
 # default values for proportion of requested image
 dlat = 0.02                     
@@ -69,7 +61,16 @@ proj = "EPSG:3857"
 
 polygon_tags = {"source":"Bing Imagery traced by fuzzer",}
 
+#
+# User configuration END
 #========================================
+
+
+lon = float(argv[1])  
+lat = float(argv[2])  
+# Coordinates from command string. 
+# (format is decimal, for SAS-planet go to Settings and set'em there as --d.
+# You can use SAS-Planet: click right mouse button on center of forest.
 
 multipolygon = polygon_tags.copy()
 multipolygon["type"] = "multipolygon"
@@ -100,7 +101,7 @@ if True:
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     queue = set([(x, y),])
     mask[x, y] = white      
-    ttz = datetime.datetime.now()
+    ttz = datetime.now()
     normales_list = set([])
     norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
     while queue:                            
@@ -120,21 +121,21 @@ if True:
                     mask[x1, y1] = white
                     queue.add((x1, y1))
 
-    debug("First walk (masking): %s" % str(datetime.datetime.now() - ttz) )
+    debug("First walk (masking): %s" % str(datetime.now() - ttz) )
     debug("Color table has %s entries" % len(color_table) )
     queue = [(x, y), ]
 
   
                
           
-    ttz = datetime.datetime.now()
+    ttz = datetime.now()
   #mask_img = mask_img.filter(ImageFilter.MaxFilter(medianfilter_str))
     mask.MaxFilter(5)
-    debug("B/W MaxFilter: %s" % str(datetime.datetime.now() - ttz) )
+    debug("B/W MaxFilter: %s" % str(datetime.now() - ttz) )
     web = mask
     mask = WmsCanvas(None, proj, zoom, tile_size, mode = "1")
     bc = 1
-    ttz = datetime.datetime.now()
+    ttz = datetime.now()
   
     while queue:
         px = queue.pop()
@@ -149,7 +150,7 @@ if True:
                                    (y1 + px[1])/2.,\
                                norm_dir[px[0] - x1, px[1]-y1]))
     debug("Found %s normales here."%len(normales_list))
-    debug("Second walk (leaving only poly): %s" % str(datetime.datetime.now() - ttz) )
+    debug("Second walk (leaving only poly): %s" % str(datetime.now() - ttz) )
   
 
 
@@ -191,19 +192,19 @@ def douglas_peucker(nodes, epsilon):
 
 
 
-osmcode = sys.stdout
+osmcode = stdout
 osmcode.write('<osm version="0.6">')
 node_num = 0
 way_num = 0
 
-sys.setrecursionlimit(1500000)
+setrecursionlimit(1500000)
 
 outline = []
 
 popped = False
 lin = []
 dir_names = ("^", ">", "v", "<")
-tz = datetime.datetime.now()
+tz = datetime.now()
 
 while normales_list:
     if not popped:
@@ -244,7 +245,7 @@ if lin:
     if len(lin)>=4:
         outline.append(lin)
   
-debug("Normales walk: %s, " % (str(datetime.datetime.now() - ttz),) )
+debug("Normales walk: %s, " % (str(datetime.now() - ttz),) )
 
 roles = {}
 for lin in outline:
@@ -283,4 +284,4 @@ if way_num < -1:
     osmcode.write( '</relation>')
 osmcode.write("</osm>")
 osmcode.flush()
-debug("All done in: %s" % str(datetime.datetime.now() - whole_time) )  
+debug("All done in: %s" % str(datetime.now() - whole_time) )  
