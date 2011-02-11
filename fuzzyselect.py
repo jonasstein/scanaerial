@@ -2,9 +2,9 @@
 # -*- coding: utf-8 -*-
 
 # __version__ = 0.01 # later...
-__author__ = "Michael Vigovsky, Jonas Stein"
+__author__ = "Upliner, Darafei Praliaskouski <me@komzpa.net>, Jonas Stein <news@jonasstein.de>"
 __license__ = "GPL"
-__credits__ = ["please fill this list"]
+__credits__ = ["Michael Vigovsky"]
 __email__ = "news@jonasstein.de"
 __maintainer__ = "Jonas Stein"
 __status__ = "Development"
@@ -36,27 +36,28 @@ def distance(a, b):
 #    debug((a, b))
     return  ((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)**0.5
 
-whole_time = datetime.now()
+WHOLE_TIME = datetime.now()
 
 #========================================
 # User configuration START
 #
 
 # default values for proportion of requested image
-dlat = 0.02                     
-dlon = 0.04                     
+DLAT = 0.02                     
+DLON = 0.04                     
 
 # smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
-douglas_peucker_epsilon = 0.60  
+DOUGLAS_PEUCKER_EPSILON = 0.60  
 
 # sensivity for color change, bigger = larger area covered = 20-23-25 is ok
 color_str = 30                  
 
 # tile_size = (256, 256)
 tile_size = (512, 512)
-#wms_server_url = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
-wms_server_url = "http://wms.latlon.org/?layers=bing&"
 
+# wms_server_url = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
+wms_server_url = "http://wms.latlon.org/?layers=bing&"
+# have a look at http://wms.latlon.org/ to select your favourite WMS server
 
 zoom = 14
 proj = "EPSG:3857"
@@ -233,7 +234,7 @@ while normales_list:
     if not found:
         popped = False
    
-        lin = douglas_peucker(lin, douglas_peucker_epsilon)
+        lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
         debug("line found; simplified to %s"%len(lin))
 
         if len(lin)>=6:
@@ -242,7 +243,7 @@ while normales_list:
         lin = []
 
 if lin:
-    lin = douglas_peucker(lin, douglas_peucker_epsilon)
+    lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
     debug("line post-found; simplified to %s"%len(lin))
     if len(lin)>=4:
         outline.append(lin)
@@ -286,4 +287,4 @@ if way_num < -1:
     osmcode.write( '</relation>')
 osmcode.write("</osm>")
 osmcode.flush()
-debug("All done in: %s" % str(datetime.now() - whole_time) )  
+debug("All done in: %s" % str(datetime.now() - WHOLE_TIME) )  
