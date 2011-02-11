@@ -43,7 +43,7 @@ lon = float(sys.argv[1])
 #  (format is decimal, for SAS-planet go to Settings and set'em there as --d.
 
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#========================================
 
 # default values for proportion of requested image
 dlat = 0.02                     
@@ -55,24 +55,22 @@ douglas_peucker_epsilon = 0.60
 # sensivity for color change, bigger = larger area covered = 20-23-25 is ok
 color_str = 32                  
 
-
 tile_size = (256, 256)
-#josm_string = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
-josm_string = "http://wms.latlon.org/?layers=bing&"
+#wms_server_url = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
+wms_server_url = "http://wms.latlon.org/?layers=bing&"
 
 zoom = 17
 proj = "EPSG:3857"
 
-
-
 polygon_tags = {"source":"Bing Imagery traced by fuzzer",}
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#========================================
+
 multipolygon = polygon_tags.copy()
 multipolygon["type"] = "multipolygon"
 
 
-web = WmsCanvas(josm_string, proj, zoom, tile_size, mode = "RGB")
+web = WmsCanvas(wms_server_url, proj, zoom, tile_size, mode = "RGB")
 
 
 
@@ -84,7 +82,6 @@ def distance(a, b):
 black = 0
 white = 1
 was_expanded = True
-H, W = 2**zoom, 2**zoom
 
 normales_list = []        
 
@@ -257,7 +254,7 @@ for lin in outline:
     area = 0
     prx, pry = lin[-1]
     for x, y in lin:
-        area+= (x * pry - y * prx) / 2
+        area += (x * pry - y * prx) / 2
         prx = x
         pry = y
      
