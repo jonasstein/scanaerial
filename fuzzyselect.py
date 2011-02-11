@@ -11,7 +11,9 @@ __status__ = "Development"
 
 
 import datetime
-import os, sys, urllib2,  math, ImageDraw
+# import os, sys, urllib2,  math, ImageDraw # unused
+import math # rewrite these soon
+import sys
 
 from canvas import WmsCanvas
 
@@ -251,7 +253,7 @@ roles = {}
 for lin in outline:
     area = 0
     prx,pry = lin[-1]
-    for x,y in lin:
+    for x, y in lin:
         area+=(x*pry-y*prx)/2
         prx = x
         pry = y
@@ -276,7 +278,7 @@ if way_num < -1:
     osmcode.write( '<relation id="-1" version="1">')
     for y in range(way_num, 0):
         role = ("inner","outer")[int(roles[y])]   
-        osmcode.write( '<member type="way" ref="%s" role="%s" />'%(y,role))
+        osmcode.write( '<member type="way" ref="%s" role="%s" />'%(y, role))
 
     for z in multipolygon.iteritems():
         osmcode.write( ' <tag k="%s" v="%s" />"'%z)
