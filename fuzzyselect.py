@@ -1,7 +1,14 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-# -*- coding: utf-8 -*- 
+# __version__ = 0.01 # later...
+__author__ = "Michael Vigovsky, Jonas Stein"
+__license__ = "GPL"
+__credits__ = ["please fill this list"]
+__email__ = "news@jonasstein.de"
+__maintainer__ = "Jonas Stein"
+__status__ = "Development"
+
 
 import datetime
 whole_time = datetime.datetime.now()
