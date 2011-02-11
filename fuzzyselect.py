@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # __version__ = 0.01 # later...
-__author__ = "Michael Vigovsky, Jonas Stein"
+__author__ = "Darafei Praliaskouski, Jonas Stein"
 __license__ = "GPL"
 __credits__ = ["please fill this list"]
 __email__ = "news@jonasstein.de"
