@@ -12,7 +12,7 @@ __status__ = "Development"
 
 import datetime
 # import os, sys, urllib2,  math, ImageDraw # unused
-import math # rewrite these soon
+from math import sqrt # rewrite these soon
 import sys
 
 from canvas import WmsCanvas
@@ -27,6 +27,8 @@ except ImportError:
 
 
 def debug(st):
+    """write things to stderr
+    """
     sys.stderr.write(str(st)+"\n")
     sys.stderr.flush()
 
@@ -43,8 +45,9 @@ lon = float(sys.argv[1])
 
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-dlat = 0.02                     # default values for proportion of requested image
-dlon = 0.04                     # default values for proportion of requested image
+# default values for proportion of requested image
+dlat = 0.02                     
+dlon = 0.04                     
 
 # smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
 douglas_peucker_epsilon = 0.60  
@@ -75,7 +78,7 @@ web = WmsCanvas(josm_string, proj, zoom, tile_size, mode = "RGB")
 
 def distance(a, b):
 #debug((a,b))
-    return math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2)             
+    return sqrt((a[0]-b[0])**2+(a[1]-b[1])**2+(a[2]-b[2])**2)             
 
 
 black = 0
@@ -161,11 +164,11 @@ def point_line_distance(p0, p1, p2):
 
     if x2 == x1 and y2 == y1:
         # Degenerate cast: the "line" is actually a point.
-        return math.sqrt((x1-x0)**2 + (y1-y0)**2)         
+        return sqrt((x1-x0)**2 + (y1-y0)**2)         
     else:                                                 
         # I don't understand this at all. Thank you, Mathworld.
         # http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
-        return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / math.sqrt((x2-x1)**2 + (y2-y1)**2)
+        return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / sqrt((x2-x1)**2 + (y2-y1)**2)
 
 def douglas_peucker(nodes, epsilon):
     #print "Running DP on %d nodes" % len(nodes)
@@ -252,9 +255,9 @@ debug("Normales walk: %s, " % (str(datetime.datetime.now() - ttz),) )
 roles = {}
 for lin in outline:
     area = 0
-    prx,pry = lin[-1]
+    prx, pry = lin[-1]
     for x, y in lin:
-        area+=(x*pry-y*prx)/2
+        area+= (x * pry - y * prx) / 2
         prx = x
         pry = y
      
