@@ -62,7 +62,7 @@ wms_server_url = "http://wms.latlon.org/?layers=bing&"
 zoom = 14
 proj = "EPSG:3857"
 
-polygon_tags = {"source":"Bing Imagery traced by fuzzer",}
+POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer",}
 
 #
 # User configuration END
@@ -75,7 +75,7 @@ lat = float(argv[2])
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
 # You can use SAS-Planet: click right mouse button on center of forest.
 
-multipolygon = polygon_tags.copy()
+multipolygon = POLYGON_TAGS.copy()
 multipolygon["type"] = "multipolygon"
 
 
@@ -271,7 +271,7 @@ for lin in outline:
         osmcode.write('<nd ref="%s" />'%(y))
     osmcode.write('<nd ref="%s" />'%(node_num))
     if len(outline) == 1:
-        for z in polygon_tags.iteritems():
+        for z in POLYGON_TAGS.iteritems():
             osmcode.write( ' <tag k="%s" v="%s" />"'%z)
     osmcode.write( "</way>")
 
