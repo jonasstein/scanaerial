@@ -104,16 +104,16 @@ if True:
             x1, y1 = px[0]+d[0], px[1]+d[1]
             if mask[x1, y1] is not white:
                 col = web[x1, y1] 
-            if col not in color_table:
+                if col not in color_table:
           #debug(col)
-                try:
-                    color_table[col] = (distance(initcolour, col) <= color_str)
-                except:
-                    debug(web.tiles)
-                    debug(mask.tiles)
-            if color_table[col]:
-                mask[x1, y1] = white
-                queue.add((x1, y1))
+                    try:
+                        color_table[col] = (distance(initcolour, col) <= color_str)
+                    except:
+                        debug(web.tiles)
+                        debug(mask.tiles)
+                if color_table[col]:
+                    mask[x1, y1] = white
+                    queue.add((x1, y1))
 
     debug("First walk (masking): %s" % str(datetime.datetime.now() - ttz) )
     debug("Color table has %s entries" % len(color_table) )
@@ -228,11 +228,11 @@ while normales_list:
     if not found:
         popped = False
    
-    lin = douglas_peucker(lin, douglas_peucker_epsilon)
-    debug("line found; simplified to %s"%len(lin))
+        lin = douglas_peucker(lin, douglas_peucker_epsilon)
+        debug("line found; simplified to %s"%len(lin))
 
-    if len(lin)>=6:
-        outline.append(lin)
+        if len(lin)>=6:
+            outline.append(lin)
         #debug(lin)
         lin = []
 
