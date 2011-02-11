@@ -149,8 +149,8 @@ if True:
                 bc += 1
                 queue.append((x1, y1))
             if web[x1, y1] is not white:
-                normales_list.add(((x1 + px[0])/2.,\
-                                   (y1 + px[1])/2.,\
+                normales_list.add(((x1 + px[0])/2., \
+                                   (y1 + px[1])/2., \
                                norm_dir[px[0] - x1, px[1]-y1]))
     debug("Found %s normales here."%len(normales_list))
     debug("Second walk (leaving only poly): %s" % str(datetime.now() - ttz) )
