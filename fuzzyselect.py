@@ -4,7 +4,7 @@
 # __version__ = 0.01 # later...
 __author__ = "Upliner, Darafei Praliaskouski <me@komzpa.net>, Jonas Stein <news@jonasstein.de>"
 __license__ = "GPL"
-__credits__ = ["Michael Vigovsky"]
+__credits__ = ["Michael Vigovsky"," "]
 __email__ = "news@jonasstein.de"
 __maintainer__ = "Jonas Stein"
 __status__ = "Development"
@@ -31,12 +31,12 @@ def debug(debug_var):
 
 
 def distance(a, b):
-    """
+    """ Euclidean metric
     """
 #    debug((a, b))
     return  ((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)**0.5
 
-WHOLE_TIME = datetime.now()
+PROGRAM_START_TIMESTAMP = datetime.now()
 
 #========================================
 # User configuration START
