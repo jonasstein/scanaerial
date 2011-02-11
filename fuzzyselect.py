@@ -83,8 +83,8 @@ web = WmsCanvas(wms_server_url, proj, zoom, tile_size, mode = "RGB")
 
 
 
-black = 0
-white = 1
+BLACK = 0
+WHITE = 1
 was_expanded = True
 
 normales_list = []        
@@ -103,7 +103,7 @@ if True:
     color_table = {}
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     queue = set([(x, y),])
-    mask[x, y] = white      
+    mask[x, y] = WHITE      
     ttz = datetime.now()
     normales_list = set([])
     norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
@@ -111,7 +111,7 @@ if True:
         px = queue.pop()                      
         for d in directions:                  
             x1, y1 = px[0]+d[0], px[1]+d[1]
-            if mask[x1, y1] is not white:
+            if mask[x1, y1] is not WHITE:
                 col = web[x1, y1] 
                 if col not in color_table:
           #debug(col)
@@ -121,7 +121,7 @@ if True:
                         debug(web.tiles)
                         debug(mask.tiles)
                 if color_table[col]:
-                    mask[x1, y1] = white
+                    mask[x1, y1] = WHITE
                     queue.add((x1, y1))
 
     debug("First walk (masking): %s" % str(datetime.now() - ttz) )
@@ -144,11 +144,11 @@ if True:
         px = queue.pop()
         for d in directions:
             x1, y1 = px[0]+d[0], px[1]+d[1]
-            if mask[x1, y1] is not white and web[x1, y1] is white:
-                mask[x1, y1] = white
+            if mask[x1, y1] is not WHITE and web[x1, y1] is WHITE:
+                mask[x1, y1] = WHITE
                 bc += 1
                 queue.append((x1, y1))
-            if web[x1, y1] is not white:
+            if web[x1, y1] is not WHITE:
                 normales_list.add(((x1 + px[0])/2., \
                                    (y1 + px[1])/2., \
                                norm_dir[px[0] - x1, px[1]-y1]))
@@ -158,8 +158,8 @@ if True:
 
 
 ######## Copypasted from lakewalker
-def point_line_distance(P0, P1, P2):
-    ((x0, y0), (x1, y1), (x2, y2)) = (P0, P1, P2)
+def point_line_distance(point0, point1, point2):
+    ((x0, y0), (x1, y1), (x2, y2)) = (point0, point1, point2)
 
     if (x2 == x1 and y2 == y1):
         # Degenerate cast: the "line" is actually a point.
