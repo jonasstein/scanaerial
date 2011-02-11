@@ -12,11 +12,10 @@ __status__ = "Development"
 
 import datetime
 # import os, sys, urllib2,  math, ImageDraw # unused
-from math import sqrt # rewrite these soon
+#from math import sqrt # rewrite these soon
 import sys
 
 from canvas import WmsCanvas
-
 
 try:
     import psyco
@@ -26,12 +25,18 @@ except ImportError:
     pass
 
 
-def debug(st):
+def debug(debug_var):
     """write things to stderr
     """
-    sys.stderr.write(str(st)+"\n")
+    sys.stderr.write(str(debug_var)+"\n")
     sys.stderr.flush()
 
+
+def distance(a, b):
+    """
+    """
+#    debug((a, b))
+    return  ((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)**0.5
 
 whole_time = datetime.datetime.now()
 
@@ -74,13 +79,6 @@ web = WmsCanvas(wms_server_url, proj, zoom, tile_size, mode = "RGB")
 
 
 
-def distance(a, b):
-    """
-    """
-#    debug((a, b))
-    return sqrt((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)             
-
-
 black = 0
 white = 1
 was_expanded = True
@@ -94,10 +92,10 @@ if True:
   #### Getting start pixel
     x, y  = web.PixelFrom4326(lon, lat)
     x, y = int(x), int(y)
-    debug ((x, y))
-    debug ((lon, lat))
+#    debug ((x, y))
+#    debug ((lon, lat))
     initcolour = web[x, y]
-    debug(mask[x, y])
+#    debug(mask[x, y])
     color_table = {}
     directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
     queue = set([(x, y),])
@@ -147,27 +145,24 @@ if True:
                 bc += 1
                 queue.append((x1, y1))
             if web[x1, y1] is not white:
-                normales_list.add(((x1+px[0])/2., (y1+px[1])/2.,norm_dir[px[0]-x1,px[1]-y1]))
+                normales_list.add(((x1 + px[0])/2.,\
+                                   (y1 + px[1])/2.,\
+                               norm_dir[px[0] - x1, px[1]-y1]))
     debug("Found %s normales here."%len(normales_list))
     debug("Second walk (leaving only poly): %s" % str(datetime.datetime.now() - ttz) )
   
-
-#  ttz = datetime.datetime.now()
-#  mask_img.save("img.png")
-#  debug("Debug mask write: %s" % str(datetime.datetime.now() - ttz) )
 
 
 ######## Copypasted from lakewalker
 def point_line_distance(p0, p1, p2):
     ((x0, y0), (x1, y1), (x2, y2)) = (p0, p1, p2)
 
-    if x2 == x1 and y2 == y1:
+    if (x2 == x1 and y2 == y1):
         # Degenerate cast: the "line" is actually a point.
-        return sqrt((x1-x0)**2 + (y1-y0)**2)         
+        return ((x1-x0)**2 + (y1-y0)**2)**0.5
     else:                                                 
-        # I don't understand this at all. Thank you, Mathworld.
         # http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
-        return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / sqrt((x2-x1)**2 + (y2-y1)**2)
+        return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / ((x2-x1)**2 + (y2-y1)**2)**0.5
 
 def douglas_peucker(nodes, epsilon):
     #print "Running DP on %d nodes" % len(nodes)
@@ -200,20 +195,20 @@ osmcode = sys.stdout
 osmcode.write('<osm version="0.6">')
 node_num = 0
 way_num = 0
-#lo1, la1, lo2, la2 = tuple(bbox)
+
 sys.setrecursionlimit(1500000)
 
 outline = []
 
 popped = False
 lin = []
-dir_names = ("^",">","v","<")
+dir_names = ("^", ">", "v", "<")
 tz = datetime.datetime.now()
 
 while normales_list:
     if not popped:
-        x,y,d = normales_list.pop()
-        lin = [(x,y),]
+        x, y, d = normales_list.pop()
+        lin = [(x, y), ]
         popped = True
     found = False
     if d is 0:        ##  up-pointing vector
