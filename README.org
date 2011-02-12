@@ -4,3 +4,12 @@
  - JOSM
  - Python
 
+ - fuzzer plug-in for JOSM 
+   http://josm-plugins.googlecode.com/files/fuzzer.jar 
+   Put it into JOSM plugins folder 
+   (for windows, %AppData%\JOSM\plugins) 
+   and enable the plugin in the JOSM settings 
+
+ - fuzzyselect.py Python script and its dependancies
+   Create a folder fuzzer at %AppData%\JOSM\plugins and save the files there. 
+   git clone git@github.com:jonasstein/fuzzer.git
