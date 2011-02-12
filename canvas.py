@@ -58,9 +58,9 @@ class WmsCanvas:
         y = y % self.tile_width
         try:
             return self.tiles[(tile_x, tile_y)]["pix"][x,y]
-            except KeyError:
+        except KeyError:
             self.FetchTile(tile_x, tile_y)
-            return self.tiles[(tile_x, tile_y)]["pix"][x,y]
+        return self.tiles[(tile_x, tile_y)]["pix"][x,y]
 
     def ConstructTileUrl (self, x, y):
         a,b,c,d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
