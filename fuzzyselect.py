@@ -108,10 +108,10 @@ tile_size = (256, 256)
 #tile_size = (512, 512)
 
 # wms_server_url = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
-wms_server_url = "http://wms.latlon.org/?layers=bing&"
+WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
 # have a look at http://wms.latlon.org/ to select your favourite WMS server
 
-zoom = 14
+ZOOM = 14
 proj = "EPSG:3857"
 
 POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
@@ -131,7 +131,7 @@ multipolygon = POLYGON_TAGS.copy()
 multipolygon["type"] = "multipolygon"
 
 
-web = WmsCanvas(wms_server_url, proj, zoom, tile_size, mode = "RGB")
+web = WmsCanvas(wms_server_url, proj, ZOOM, tile_size, mode = "RGB")
 
 
 
@@ -143,7 +143,7 @@ normales_list = []
 
 
 if True:
-    mask = WmsCanvas(None, proj, zoom, tile_size, mode = "1")
+    mask = WmsCanvas(None, proj, ZOOM, tile_size, mode = "1")
 
   #### Getting start pixel
     x, y  = web.PixelFrom4326(lon, lat)
@@ -186,7 +186,7 @@ if True:
     mask.MaxFilter(5)
     debug("B/W MaxFilter: %s" % str(datetime.now() - ttz) )
     web = mask
-    mask = WmsCanvas(None, proj, zoom, tile_size, mode = "1")
+    mask = WmsCanvas(None, proj, ZOOM, tile_size, mode = "1")
     bc = 1
     ttz = datetime.now()
   
