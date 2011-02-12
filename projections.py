@@ -1,22 +1,20 @@
 # -*- coding: utf-8 -*-
 #    This file is part of tWMS.
 
-#   tWMS is free software: you can redistribute it and/or modify
-#   it under the terms of the GNU General Public License as published by
-#   the Free Software Foundation, either version 3 of the License, or
-#   (at your option) any later version.
+#    tWMS is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
 
-#   tWMS is distributed in the hope that it will be useful,
-#   but WITHOUT ANY WARRANTY; without even the implied warranty of
-#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#   GNU General Public License for more details.
+#    tWMS is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
 
-#   You should have received a copy of the GNU General Public License
-#   along with tWMS.  If not, see <http://www.gnu.org/licenses/>.
-
+#    You should have received a copy of the GNU General Public License
+#    along with tWMS.  If not, see <http://www.gnu.org/licenses/>.
 
 import pyproj
-
 
 projs = {
     "EPSG:4326":{
@@ -33,8 +31,8 @@ projs = {
                 }
         }
 proj_alias = {
-     "EPSG:900913": "EPSG:3857",
-     "EPSG:3785": "EPSG:3857",
+               "EPSG:900913": "EPSG:3857",
+               "EPSG:3785": "EPSG:3857",
               }
 
 def tile_by_bbox(bbox, zoom, srs):
@@ -44,7 +42,7 @@ def tile_by_bbox(bbox, zoom, srs):
     a1, a2 = tile_by_coords((bbox[0],bbox[1]),zoom, srs)
     b1, b2 = tile_by_coords((bbox[2],bbox[3]),zoom, srs)
     if b1 < a1:
-      b1 += 2**(zoom-1)
+        b1 += 2**(zoom-1)
     return a1,a2,b1,b2
 
 def bbox_by_tile(z,x,y, srs):
@@ -54,7 +52,6 @@ def bbox_by_tile(z,x,y, srs):
     a1,a2 = coords_by_tile(z,x,y,srs)
     b1,b2 = coords_by_tile(z,x+1,y+1,srs)
     return a1,b2,b1,a2
-
 
 def coords_by_tile(z,x,y,srs):
     """
@@ -67,7 +64,6 @@ def coords_by_tile(z,x,y,srs):
     projected_coords = [(normalized_tile[0]*maxp[0])+projected_bounds[0], (normalized_tile[1]*maxp[1])+projected_bounds[1]]
     return to4326(projected_coords, srs)
 
-
 def tile_by_coords((lon,lat), zoom, srs):
     """
     Converts EPSG:4326 latitude and longitude to tile number of srs-projected tile pyramid.
@@ -78,9 +74,9 @@ def tile_by_coords((lon,lat), zoom, srs):
     zoom -= 1
     projected_bounds = from4326(projs[proj_alias.get(srs,srs)]["bounds"], srs)
     point = from4326((lon,lat), srs)
-    point = [point[0]-projected_bounds[0],point[1]-projected_bounds[1]]                       # shifting (0,0)
+    point = [point[0]-projected_bounds[0],point[1]-projected_bounds[1]]                          #shifting (0,0)
     maxp = [projected_bounds[2]-projected_bounds[0],projected_bounds[3]-projected_bounds[1]]
-    point = [1.*point[0]/maxp[0],  1.*point[1]/maxp[1]]                                       # normalizing
+    point = [1.*point[0]/maxp[0],  1.*point[1]/maxp[1]]                                       #normalizing
     return point[0]*(2**zoom), (1-point[1])*(2**zoom)
 
 def to4326 (line, srs):
@@ -108,22 +104,22 @@ def transform (line, srs1, srs2):
     line = list(line)
     serial = False
     if (type(line[0]) is not tuple) and (type(line[0]) is not list):
-      serial = True
-      l1 = []
-      while line:
-         a = line.pop(0)
-         b = line.pop(0)
-         l1.append([a,b])
-      line = l1
+        serial = True
+        l1 = []
+        while line:
+            a = line.pop(0)
+            b = line.pop(0)
+            l1.append([a,b])
+        line = l1
     ans = []
     for point in line:
-      p = pyproj.transform(projs[proj_alias.get(srs1,srs1)]["proj"], projs[proj_alias.get(srs2,srs2)]["proj"], point[0], point[1])
-      if serial:
-         ans.append(p[0])
-         ans.append(p[1])
-      else:
-         ans.append(p)
+        p = pyproj.transform(projs[proj_alias.get(srs1,srs1)]["proj"], projs[proj_alias.get(srs2,srs2)]["proj"], point[0], point[1])
+        if serial:
+            ans.append(p[0])
+            ans.append(p[1])
+        else:
+            ans.append(p)
     return ans
 
 if __name__ == "__main__":
-  pass
+    pass
