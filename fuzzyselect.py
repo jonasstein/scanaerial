@@ -1,6 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+This script will search a area with similar color and send
+it back to JOSM
+"""
+
 # __version__ = 0.01 # later...
 __author__ = "Upliner, Darafei Praliaskouski <me@komzpa.net>, Jonas Stein <news@jonasstein.de>"
 __license__ = "GPL"
@@ -128,9 +133,7 @@ if True:
     debug("Color table has %s entries" % len(color_table) )
     queue = [(x, y), ]
 
-  
-               
-          
+            
     ttz = datetime.now()
   #mask_img = mask_img.filter(ImageFilter.MaxFilter(medianfilter_str))
     mask.MaxFilter(5)
@@ -159,13 +162,16 @@ if True:
 
 ######## Copypasted from lakewalker
 def point_line_distance(point0, point1, point2):
+    """  check if the "line" is actually a point 
+    if not use
+    http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html    
+    """
+
     ((x0, y0), (x1, y1), (x2, y2)) = (point0, point1, point2)
 
     if (x2 == x1 and y2 == y1):
-        # Degenerate cast: the "line" is actually a point.
         return ((x1-x0)**2 + (y1-y0)**2)**0.5
     else:                                                 
-        # http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
         return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / ((x2-x1)**2 + (y2-y1)**2)**0.5
 
 def douglas_peucker(nodes, epsilon):
