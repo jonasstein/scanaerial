@@ -101,8 +101,8 @@ class WmsCanvas:
             self.tiles[tile]["im"] = self.tiles[tile]["im"].filter(ImageFilter.MedianFilter(size))
             self.tiles[tile]["pix"] = self.tiles[tile]["im"].load()
 
-   def MaxFilter(self, size = 5):
-      tiles = self.tiles.keys()
-      for tile in tiles:
-        self.tiles[tile]["im"] = self.tiles[tile]["im"].filter(ImageFilter.MedianFilter(size))
-        self.tiles[tile]["pix"] = self.tiles[tile]["im"].load()
+    def MaxFilter(self, size = 5):
+        tiles = self.tiles.keys()
+        for tile in tiles:
+            self.tiles[tile]["im"] = self.tiles[tile]["im"].filter(ImageFilter.MedianFilter(size))
+            self.tiles[tile]["pix"] = self.tiles[tile]["im"].load()
