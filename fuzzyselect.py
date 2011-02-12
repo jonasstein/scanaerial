@@ -9,7 +9,7 @@ it back to JOSM
 # __version__ = 0.01 # later...
 __author__ = "Darafei Praliaskouski, Jonas Stein"
 __license__ = "GPL"
-__credits__ = ["Michael Vigovsky"," "]
+__credits__ = [""," "]
 __email__ = "news@jonasstein.de"
 __maintainer__ = "Jonas Stein"
 __status__ = "Development"
