@@ -9,7 +9,7 @@ it back to JOSM
 # __version__ = 0.01 # later...
 __author__ = "Darafei Praliaskouski, Jonas Stein"
 __license__ = "GPL"
-__credits__ = [""," "]
+__credits__ = ["Lakewalker-developer-Team","JOSM-developer-Team"]
 __email__ = "news@jonasstein.de"
 __maintainer__ = "Jonas Stein"
 __status__ = "Development"
@@ -310,3 +310,14 @@ if way_num < -1:
 osmcode.write("</osm>")
 osmcode.flush()
 debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP) )  
+
+
+""" TODO
+
+Ext_Tools nice substitute for fuzzer.jar
+
+
+TMSZoom 
+TMS zoom is integer for all TMS tiles, but JOSM zoomlevel is not neccecarily matches any of TMS tiles. 
+
+"""
