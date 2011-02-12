@@ -7,11 +7,7 @@ it back to JOSM
 """
 
 # __version__ = 0.01 # later...
-<<<<<<< HEAD
-__author__ = "Upliner, Darafei Praliaskouski <me@komzpa.net>, Jonas Stein <news@jonasstein.de>"
-=======
 __author__ = "Darafei Praliaskouski, Jonas Stein"
->>>>>>> 7d0d03e8a95edfdf795846d5f44c358e9a19bb61
 __license__ = "GPL"
 __credits__ = ["Michael Vigovsky"," "]
 __email__ = "news@jonasstein.de"
