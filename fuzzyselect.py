@@ -60,11 +60,11 @@ def douglas_peucker(nodes, epsilon):
     http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
     Copypasted from lakewalker
     """
-        farthest_node = None
+    farthest_node = None
     farthest_dist = 0
     first = nodes[0]
     last = nodes[-1]
-
+	
     for i in xrange(1, len(nodes) - 1):
         d = point_line_distance(nodes[i], first, last)
         if d > farthest_dist:
