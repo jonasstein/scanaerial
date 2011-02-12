@@ -41,6 +41,52 @@ def distance(a, b):
 #    debug((a, b))
     return  ((a[0] - b[0])**2 + (a[1] - b[1])**2 + (a[2] - b[2])**2)**0.5
 
+
+
+
+def point_line_distance(point0, point1, point2):
+    """  check if the "line" is actually a point 
+    if not use
+    http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html    
+    Copypasted from lakewalker
+
+    """
+
+    ((x0, y0), (x1, y1), (x2, y2)) = (point0, point1, point2)
+
+    if (x2 == x1 and y2 == y1):
+        return ((x1-x0)**2 + (y1-y0)**2)**0.5
+    else:                                                 
+        return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / ((x2-x1)**2 + (y2-y1)**2)**0.5
+
+def douglas_peucker(nodes, epsilon):
+    """ makes a linear curve smoother see also 
+    http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
+    Copypasted from lakewalker
+
+    """
+    farthest_node = None                        
+    farthest_dist = 0                           
+    first = nodes[0]                            
+    last = nodes[-1]                            
+
+    for i in xrange(1, len(nodes) - 1):
+        d = point_line_distance(nodes[i], first, last)
+        if d > farthest_dist:                         
+            farthest_dist = d                         
+            farthest_node = i                         
+
+    if farthest_dist > epsilon:
+        seg_a = douglas_peucker(nodes[0:farthest_node+1], epsilon)
+        seg_b = douglas_peucker(nodes[farthest_node:-1], epsilon) 
+        nodes = seg_a[:-1] + seg_b
+    else:
+        return [nodes[0], nodes[-1]]
+    return nodes
+
+
+
+
 PROGRAM_START_TIMESTAMP = datetime.now()
 
 #========================================
@@ -55,10 +101,11 @@ DLON = 0.04
 DOUGLAS_PEUCKER_EPSILON = 0.60  
 
 # sensivity for color change, bigger = larger area covered = 20-23-25 is ok
-color_str = 30                  
+#color_str = 30                  
+color_str = 23
 
-# tile_size = (256, 256)
-tile_size = (512, 512)
+tile_size = (256, 256)
+#tile_size = (512, 512)
 
 # wms_server_url = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
 wms_server_url = "http://wms.latlon.org/?layers=bing&"
@@ -67,7 +114,7 @@ wms_server_url = "http://wms.latlon.org/?layers=bing&"
 zoom = 14
 proj = "EPSG:3857"
 
-POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer",}
+POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
 
 #
 # User configuration END
@@ -160,45 +207,7 @@ if True:
   
 
 
-######## Copypasted from lakewalker
-def point_line_distance(point0, point1, point2):
-    """  check if the "line" is actually a point 
-    if not use
-    http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html    
-    """
 
-    ((x0, y0), (x1, y1), (x2, y2)) = (point0, point1, point2)
-
-    if (x2 == x1 and y2 == y1):
-        return ((x1-x0)**2 + (y1-y0)**2)**0.5
-    else:                                                 
-        return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / ((x2-x1)**2 + (y2-y1)**2)**0.5
-
-def douglas_peucker(nodes, epsilon):
-    """ makes a linear curve smoother see also 
-    http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
-
-    """
-    farthest_node = None                        
-    farthest_dist = 0                           
-    first = nodes[0]                            
-    last = nodes[-1]                            
-
-    for i in xrange(1, len(nodes) - 1):
-        d = point_line_distance(nodes[i], first, last)
-        if d > farthest_dist:                         
-            farthest_dist = d                         
-            farthest_node = i                         
-
-    if farthest_dist > epsilon:
-        seg_a = douglas_peucker(nodes[0:farthest_node+1], epsilon)
-        seg_b = douglas_peucker(nodes[farthest_node:-1], epsilon) 
-        nodes = seg_a[:-1] + seg_b
-    else:
-        return [nodes[0], nodes[-1]]
-    return nodes
-
-############## End of copypaste
 
 
 
