@@ -74,7 +74,7 @@ def tile_by_coords((lon,lat), zoom, srs):
     zoom -= 1
     projected_bounds = from4326(projs[proj_alias.get(srs,srs)]["bounds"], srs)
     point = from4326((lon,lat), srs)
-    point = [point[0]-projected_bounds[0],point[1]-projected_bounds[1]]                          #shifting (0,0)
+    point = [point[0]-projected_bounds[0],point[1]-projected_bounds[1]]                       #shifting (0,0)
     maxp = [projected_bounds[2]-projected_bounds[0],projected_bounds[3]-projected_bounds[1]]
     point = [1.*point[0]/maxp[0],  1.*point[1]/maxp[1]]                                       #normalizing
     return point[0]*(2**zoom), (1-point[1])*(2**zoom)
