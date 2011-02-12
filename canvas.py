@@ -14,12 +14,14 @@
 #   You should have received a copy of the GNU General Public License
 #   along with tWMS.  If not, see <http://www.gnu.org/licenses/>.
 
-import projections
 import Image, ImageFilter
 import urllib2
 import StringIO
 import datetime
 import sys
+#
+import projections
+from exceptions import TileLoadError
 
 def debug(st):
     sys.stderr.write(str(st)+"\n")
@@ -56,11 +58,12 @@ class WmsCanvas:
         x = x % self.tile_height
         tile_y = int(y/self.tile_width)
         y = y % self.tile_width
-        try:
-            return self.tiles[(tile_x, tile_y)]["pix"][x,y]
-        except KeyError:
-            self.FetchTile(tile_x, tile_y)
-        return self.tiles[(tile_x, tile_y)]["pix"][x,y]
+        for i in range(0,3):
+            try:
+                return self.tiles[(tile_x, tile_y)]["pix"][x,y]
+            except KeyError:
+                self.FetchTile(tile_x, tile_y)
+        raise TileLoadError, "internal error while fetching tile"
 
     def ConstructTileUrl (self, x, y):
         a,b,c,d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
