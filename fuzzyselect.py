@@ -102,7 +102,7 @@ DOUGLAS_PEUCKER_EPSILON = 0.60
 
 # sensivity for color change, bigger = larger area covered = 20-23-25 is ok
 #color_str = 30                  
-color_str = 23
+color_str = 42
 
 tile_size = (256, 256)
 #tile_size = (512, 512)
@@ -111,7 +111,7 @@ tile_size = (256, 256)
 WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
 # have a look at http://wms.latlon.org/ to select your favourite WMS server
 
-ZOOM = 15
+ZOOM = 13
 proj = "EPSG:3857"
 
 POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
