@@ -34,6 +34,8 @@ proj_alias = {
                "EPSG:900913": "EPSG:3857",
                "EPSG:3785": "EPSG:3857",
               }
+              
+EPSG_4326 = "EPSG:4326"
 
 def tile_by_bbox(bbox, zoom, srs):
     """
@@ -85,7 +87,7 @@ def to4326 (line, srs):
     line - a list of [lat0,lon0,lat1,lon1,...] or [(lat0,lon0),(lat1,lon1),...]
     srs - text string, specifying projection
     """
-    return transform(line, srs, "EPSG:4326")
+    return transform(line, srs, EPSG_4326)
 
 def from4326 (line, srs):
     """
@@ -93,7 +95,7 @@ def from4326 (line, srs):
     line - a list of [lat0,lon0,lat1,lon1,...] or [(lat0,lon0),(lat1,lon1),...]
     srs - text string, specifying projection
     """
-    return transform(line, "EPSG:4326", srs)
+    return transform(line, EPSG_4326, srs)
 
 def transform (line, srs1, srs2):
     """
