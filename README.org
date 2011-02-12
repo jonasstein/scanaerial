@@ -1,0 +1,6 @@
+* Select areas of similar colour on satellite pictures
+
+* Requirements
+ - JOSM
+ - Python
+
