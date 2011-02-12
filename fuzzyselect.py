@@ -20,7 +20,7 @@ it back to JOSM
 """
 
 # __version__ = 0.01 # later...
-__author__ = "Darafei Praliaskouski, Jonas Stein"
+__author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W."
 __license__ = "GPL"
 __credits__ = ["Lakewalker-developer-Team","JOSM-developer-Team"]
 __email__ = "news@jonasstein.de"
