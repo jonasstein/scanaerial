@@ -44,7 +44,7 @@ def distance(a, b):
 
 
 
-def point_line_distance(point0, point1, point2):
+def point_line_distance(point, startline, endline):
     """  check if the "line" is actually a point 
     if not use
     http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html    
@@ -52,12 +52,13 @@ def point_line_distance(point0, point1, point2):
 
     """
 
-    ((x0, y0), (x1, y1), (x2, y2)) = (point0, point1, point2)
-
-    if (x2 == x1 and y2 == y1):
-        return ((x1-x0)**2 + (y1-y0)**2)**0.5
+    if (startline == endline):
+        return ((startline[0] - endline[0])**2 + \
+                (startline[1] - endline[1])**2   )**0.5
     else:                                                 
-        return abs((x2-x1)*(y1-y0) - (x1-x0)*(y2-y1)) / ((x2-x1)**2 + (y2-y1)**2)**0.5
+        return abs( (endline[0] - startline[0]) * (startline[1]-point[1]) - \
+                    (startline[0] - point[0]) * (endline[1] - startline[1])) / \
+           ((endline[0] - startline[0])**2 + (endline[1] - startline[1])**2)**0.5
 
 def douglas_peucker(nodes, epsilon):
     """ makes a linear curve smoother see also 
@@ -98,20 +99,25 @@ DLAT = 0.02
 DLON = 0.04                     
 
 # smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
+# DOUGLAS_PEUCKER_EPSILON = 0.60 # for Benchmark
 DOUGLAS_PEUCKER_EPSILON = 0.60  
 
 # sensivity for color change, bigger = larger area covered = 20-23-25 is ok
-#color_str = 30                  
-color_str = 42
+color_str = 30 # for Benchmark                 
+# color_str = 42
 
-tile_size = (256, 256)
+tile_size = (256, 256) # for Benchmark
 #tile_size = (512, 512)
 
 # WMS_SERVER_URL = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
+
+# WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&" # for Benchmark
 WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
+
 # have a look at http://wms.latlon.org/ to select your favourite WMS server
 
-ZOOM = 13
+# ZOOM = 17 # for Benchmark
+ZOOM = 17
 proj = "EPSG:3857"
 
 POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
