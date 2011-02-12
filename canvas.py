@@ -21,7 +21,6 @@ import datetime
 import sys
 #
 import projections
-from exceptions import TileLoadError
 
 def debug(st):
     sys.stderr.write(str(st)+"\n")
@@ -63,7 +62,7 @@ class WmsCanvas:
                 return self.tiles[(tile_x, tile_y)]["pix"][x,y]
             except KeyError:
                 self.FetchTile(tile_x, tile_y)
-        raise TileLoadError, "internal error while fetching tile"
+        raise KeyError("internal error while fetching tile")
 
     def ConstructTileUrl (self, x, y):
         a,b,c,d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
