@@ -107,11 +107,11 @@ color_str = 23
 tile_size = (256, 256)
 #tile_size = (512, 512)
 
-# wms_server_url = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
+# WMS_SERVER_URL = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
 WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
 # have a look at http://wms.latlon.org/ to select your favourite WMS server
 
-ZOOM = 14
+ZOOM = 15
 proj = "EPSG:3857"
 
 POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
@@ -131,7 +131,7 @@ multipolygon = POLYGON_TAGS.copy()
 multipolygon["type"] = "multipolygon"
 
 
-web = WmsCanvas(wms_server_url, proj, ZOOM, tile_size, mode = "RGB")
+web = WmsCanvas(WMS_SERVER_URL, proj, ZOOM, tile_size, mode = "RGB")
 
 
 
