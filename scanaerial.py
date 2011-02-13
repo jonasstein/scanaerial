@@ -112,7 +112,7 @@ __status__ = "Development"
 PROGRAM_START_TIMESTAMP = datetime.now()
 
 WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
-TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey')
+TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
 
 
 try:
