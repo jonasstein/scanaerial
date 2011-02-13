@@ -21,8 +21,8 @@ Use this to detect missing libaries which are needed by fuzzer.
 import sys
 
 def debug(st):
-    sys.stderr.write(str(st)+"\n")
-    
+    sys.stderr.write(str(st) + "\n")
+
 check = True
 
 debug("searching (Image, ImageFilter) Python Image Libary...")
@@ -40,6 +40,6 @@ try:
 except ImportError:
     check = False
     debug("Python Projection Libary missing, download at http://code.google.com/p/pyproj/")
-    
+
 if check:
     print("Everthing works fine, you may run fuzzer now.")

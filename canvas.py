@@ -22,10 +22,10 @@ import sys
 #
 import projections
 
-time_str  = {0:" first ", 1:" second ",2:" third and last "}
+time_str = {0:" first ", 1:" second ", 2:" third and last "}
 
 def debug(st):
-    sys.stderr.write(str(st)+"\n")
+    sys.stderr.write(str(st) + "\n")
 
 class WmsCanvas:
 
@@ -43,89 +43,83 @@ class WmsCanvas:
 
     def __setitem__ (self, x, v):
         x, y = x
-        tile_x = int(x/self.tile_height)
+        tile_x = int(x / self.tile_height)
         x = x % self.tile_height
-        tile_y = int(y/self.tile_width)
+        tile_y = int(y / self.tile_width)
         y = y % self.tile_width
         try:
-            self.tiles[(tile_x, tile_y)]["pix"][x,y] = v
+            self.tiles[(tile_x, tile_y)]["pix"][x, y] = v
         except KeyError:
             self.FetchTile(tile_x, tile_y)
-            self.tiles[(tile_x, tile_y)]["pix"][x,y] = v
+            self.tiles[(tile_x, tile_y)]["pix"][x, y] = v
 
     def __getitem__ (self, x):
         x, y = x
-        tile_x = int(x/self.tile_height)
+        tile_x = int(x / self.tile_height)
         x = x % self.tile_height
-        tile_y = int(y/self.tile_width)
+        tile_y = int(y / self.tile_width)
         y = y % self.tile_width
-        for i in range(0,3):
+        for i in range(0, 3):
             try:
-                return self.tiles[(tile_x, tile_y)]["pix"][x,y]
+                return self.tiles[(tile_x, tile_y)]["pix"][x, y]
             except KeyError:
                 self.FetchTile(tile_x, tile_y)
         raise KeyError("internal error while fetching tile")
 
     def ConstructTileUrl (self, x, y):
-        a,b,c,d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
-        return self.wms_url + "width=%s&height=%s&srs=%s&bbox=%s,%s,%s,%s"%(self.tile_width, self.tile_height, self.proj, a,b,c,d)
+        a, b, c, d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
+        return self.wms_url + "width=%s&height=%s&srs=%s&bbox=%s,%s,%s,%s" % (self.tile_width, self.tile_height, self.proj, a, b, c, d)
 
     def FetchTile(self, x, y):
         dl_done = False
-        if (x,y) in self.tiles:
+        if (x, y) in self.tiles:
             return
-            
+
         tile_data = ""
-        if self.wms_url:                  
+        if self.wms_url:
             remote = self.ConstructTileUrl (x, y)
             debug(remote)
             ttz = datetime.datetime.now()
-            for dl_retrys in range(0,3):
+            for dl_retrys in range(0, 3):
                 try:
                     contents = urllib2.urlopen(remote).read()
                 except URLError as detail:
-                    debug("error while fetching tile ("+x+", "+y+": "+str(detail))
-                    debug("retry download"+time_str[dl_retrys]+"time")
+                    debug("error while fetching tile (" + x + ", " + y + ": " + str(detail))
+                    debug("retry download" + time_str[dl_retrys] + "time")
                     continue
-                    
-                except HTTPError as e:
-                    debug("error while fetching tile ("+x+", "+y+": "+str(detail))
-                    debug("retry download"+time_str[dl_retrys]+"time")
+
+                except HTTPError as detail:
+                    debug("error while fetching tile (" + x + ", " + y + ": " + str(detail))
+                    debug("retry download" + time_str[dl_retrys] + "time")
                     continue
-                    
+
                 debug("Download took %s sec" % str(datetime.datetime.now() - ttz))
                 try:
                     tile_data = Image.open(StringIO.StringIO(contents))
-                    
+
                 except:
                     debug("error while loading tile image-data corrupt")
-                    debug("retry download"+time_str[dl_retrys]+"time")
+                    debug("retry download" + time_str[dl_retrys] + "time")
                     continue
                 dl_done = True
                 break
-            
+
         if not dl_done:
-            tile_data = Image.new(self.mode, (self.tile_width,self.tile_height))
+            tile_data = Image.new(self.mode, (self.tile_width, self.tile_height))
             debug("could not be loaded, blanking tile")
-            
+
         if tile_data.mode != self.mode:
             tile_data = tile_data.convert(self.mode)
-        self.tiles[(x,y)] = {}
-        self.tiles[(x,y)]["im"] = tile_data
-        self.tiles[(x,y)]["pix"] = tile_data.load()
+        self.tiles[(x, y)] = {}
+        self.tiles[(x, y)]["im"] = tile_data
+        self.tiles[(x, y)]["pix"] = tile_data.load()
 
-    def PixelAs4326(self,x,y):
-            return projections.coords_by_tile(self.zoom, 1.*x/self.tile_width, 1.*y/self.tile_height, self.proj)
+    def PixelAs4326(self, x, y):
+            return projections.coords_by_tile(self.zoom, 1. * x / self.tile_width, 1. * y / self.tile_height, self.proj)
 
-    def PixelFrom4326(self,lon,lat):
-        a,b =  projections.tile_by_coords((lon, lat), self.zoom, self.proj)
-        return a*self.tile_width, b*self.tile_height
-
-    def MaxFilter(self, size = 5):
-        tiles = self.tiles.keys()
-        for tile in tiles:
-            self.tiles[tile]["im"] = self.tiles[tile]["im"].filter(ImageFilter.MedianFilter(size))
-            self.tiles[tile]["pix"] = self.tiles[tile]["im"].load()
+    def PixelFrom4326(self, lon, lat):
+        a, b = projections.tile_by_coords((lon, lat), self.zoom, self.proj)
+        return a * self.tile_width, b * self.tile_height
 
     def MaxFilter(self, size = 5):
         tiles = self.tiles.keys()
