@@ -14,9 +14,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-import ConfigParser
+import ConfigParser, sys
 config = ConfigParser.ConfigParser()
-config.readfp(open('scanaerial.cfg'))
+config.readfp(open(sys.path[0]+'\\scanaerial.cfg'))
 
 
 
