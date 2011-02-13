@@ -14,10 +14,11 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-#import ConfigParser
+import ConfigParser
+config = ConfigParser.ConfigParser()
+config.readfp(open('scanaerial.cfg'))
 
-#config = ConfigParser.ConfigParser()
-#config.readfp(open('settings.cfg'))
+
 
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
 #DOUGLAS_PEUCKER_EPSILON = 0.60 # for Benchmark
