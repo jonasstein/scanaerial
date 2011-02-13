@@ -328,7 +328,7 @@ debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP) )
 
 
 """ TODO
-TMSZoom
-TMS zoom is integer for all TMS tiles, but JOSM zoomlevel is not neccecarily matches any of TMS tiles.
+for benchmark we can use another configfile (just overwriting the default one)
+
 
 """
