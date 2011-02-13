@@ -135,14 +135,14 @@ PROGRAM_START_TIMESTAMP = datetime.now()
 try:
     lat = float(argv[1])
     lon = float(argv[2])
-except IndexError, ValueError:
+except (IndexError, ValueError):
     debug("this program expects latitude longitude, now running debug mode")
     lon = 1.0
     lat = 1.0
 
 try:
     ZOOM = int(float(argv[3]))
-except IndexError, ValueError:
+except (IndexError, ValueError):
     debug("could not read TZoom from commandline, fixed zoom level is used")
     ZOOM = config.getint('WMS', 'fixedzoomlevel')    
  
