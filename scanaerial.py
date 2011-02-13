@@ -16,7 +16,11 @@
 
 import ConfigParser, sys
 config = ConfigParser.ConfigParser()
+<<<<<<< HEAD
 config.readfp(open(sys.path[0]+'\\scanaerial.cfg'))
+=======
+config.readfp(open('/tmp/scanaerial.cfg')) #FIXME Ext_tools can not set the working dir. Need a nice way to fix this.
+>>>>>>> fd5a14570581b7b17055f04128e7d59995e5c840
 
 
 
@@ -39,7 +43,9 @@ WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
 #have a look at http://wms.latlon.org/ to select your favourite WMS server
 
 #ZOOM = 17 # for Benchmark
-ZOOM = 14
+ZOOM = config.getint('WMS', 'fixedzoomlevel')
+
+
 proj = "EPSG:3857"
 
 POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
