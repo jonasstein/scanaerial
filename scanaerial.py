@@ -37,9 +37,9 @@ WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
 
 #have a look at http://wms.latlon.org/ to select your favourite WMS server
 
-#ZOOM = 17 # for Benchmark
-ZOOM = config.getint('WMS', 'fixedzoomlevel')
+# ZOOM = 17 # for Benchmark
 
+# ZOOM = 13
 
 proj = "EPSG:3857"
 
@@ -131,6 +131,7 @@ def douglas_peucker(nodes, epsilon):
     
 PROGRAM_START_TIMESTAMP = datetime.now()
 
+
 try:
     lat = float(argv[1])
     lon = float(argv[2])
@@ -140,7 +141,7 @@ except IndexError:
     lat = 1.0
 benchmark = ""
 try:
-    benchmark = str(argv[3]).lower()
+    benchmark = str(argv[4]).lower()
 except IndexError:
     pass
 if benchmark == "bench":
@@ -151,6 +152,13 @@ if benchmark == "bench":
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
 # You can use SAS-Planet: click right mouse button on center of forest.
+
+try:
+    ZOOM = int(float(argv[3]))
+except IndexError:
+    ZOOM = config.getint('WMS', 'fixedzoomlevel')    
+
+
 
 multipolygon = POLYGON_TAGS.copy()
 multipolygon["type"] = "multipolygon"
