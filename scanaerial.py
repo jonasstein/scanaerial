@@ -16,12 +16,7 @@
 
 import ConfigParser, sys
 config = ConfigParser.ConfigParser()
-<<<<<<< HEAD
 config.readfp(open(sys.path[0]+'\\scanaerial.cfg'))
-=======
-config.readfp(open('/tmp/scanaerial.cfg')) #FIXME Ext_tools can not set the working dir. Need a nice way to fix this.
->>>>>>> fd5a14570581b7b17055f04128e7d59995e5c840
-
 
 
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
@@ -325,9 +320,6 @@ debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP) )
 
 
 """ TODO
-
-Ext_Tools nice substitute for fuzzer.jar
-
 TMSZoom
 TMS zoom is integer for all TMS tiles, but JOSM zoomlevel is not neccecarily matches any of TMS tiles.
 
