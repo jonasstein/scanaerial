@@ -14,11 +14,6 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-
-#default values for proportion of requested image
-DLAT = 0.02
-DLON = 0.04
-
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
 #DOUGLAS_PEUCKER_EPSILON = 0.60 # for Benchmark
 DOUGLAS_PEUCKER_EPSILON = 0.60
