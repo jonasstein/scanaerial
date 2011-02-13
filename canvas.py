@@ -19,13 +19,12 @@ import urllib2
 import StringIO
 import datetime
 import sys
+from time import clock
+from debug import debug
 #
 import projections
 
 time_str = {0:" first ", 1:" second ", 2:" third and last "}
-
-def debug(st):
-    sys.stderr.write(str(st) + "\n")
 
 class WmsCanvas:
 
@@ -72,17 +71,18 @@ class WmsCanvas:
 
     def FetchTile(self, x, y):
         dl_done = False
+
         if (x, y) in self.tiles:
             return
 
         tile_data = ""
         if self.wms_url:
             remote = self.ConstructTileUrl (x, y)
-            debug(remote)
-            ttz = datetime.datetime.now()
+            start = clock()
             for dl_retrys in range(0, 3):
                 try:
                     contents = urllib2.urlopen(remote).read()
+                    
                 except URLError as detail:
                     debug("error while fetching tile (" + x + ", " + y + ": " + str(detail))
                     debug("retry download" + time_str[dl_retrys] + "time")
@@ -93,7 +93,7 @@ class WmsCanvas:
                     debug("retry download" + time_str[dl_retrys] + "time")
                     continue
 
-                debug("Download took %s sec" % str(datetime.datetime.now() - ttz))
+                debug("Download took %s sec" % str(clock() - start))
                 try:
                     tile_data = Image.open(StringIO.StringIO(contents))
 
@@ -113,6 +113,7 @@ class WmsCanvas:
         self.tiles[(x, y)] = {}
         self.tiles[(x, y)]["im"] = tile_data
         self.tiles[(x, y)]["pix"] = tile_data.load()
+        
 
     def PixelAs4326(self, x, y):
             return projections.coords_by_tile(self.zoom, 1. * x / self.tile_width, 1. * y / self.tile_height, self.proj)

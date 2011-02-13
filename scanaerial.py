@@ -21,9 +21,9 @@ it back to JOSM
 
 import ConfigParser, sys
 from datetime import datetime
-from sys import stderr, argv, stdout, setrecursionlimit
+from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
-from time import clock
+from debug import debug
 
 try:
     import psyco
@@ -31,12 +31,6 @@ try:
 
 except ImportError:
     pass
- 
-def debug(debug_var):
-    """write things to stderr
-    """
-    stderr.write(str(debug_var) + "\n")
-    stderr.flush()
 
 def distance(a, b):
     """ Euclidean metric
@@ -219,8 +213,7 @@ while queue:
 debug("Found %s normales here." % len(normales_list))
 debug("Second walk (leaving only poly): %s" % str(datetime.now() - ttz))
 
-osmcode = stdout
-osmcode.write('<osm version="0.6">')
+stdout.write('<osm version="0.6">')
 node_num = 0
 way_num = 0
 
@@ -286,31 +279,31 @@ for lin in outline:
     for coord in lin:
         node_num -= 1
         lon, lat = web.PixelAs4326(coord[0], coord[1])
-        osmcode.write('<node id="%s" lon="%s" lat="%s" version="1" />' % (node_num, lon, lat))
+        stdout.write('<node id="%s" lon="%s" lat="%s" version="1" />' % (node_num, lon, lat))
 
     way_num -= 1
     roles[way_num] = (area > 0)
-    osmcode.write('<way id="%s" version="1">' % (way_num))
+    stdout.write('<way id="%s" version="1">' % (way_num))
     for y in range(node_num, node_num + len(lin)):
-        osmcode.write('<nd ref="%s" />' % (y))
-    osmcode.write('<nd ref="%s" />' % (node_num))
+        stdout.write('<nd ref="%s" />' % (y))
+    stdout.write('<nd ref="%s" />' % (node_num))
     if len(outline) == 1:
         for z in POLYGON_TAGS.iteritems():
-            osmcode.write(' <tag k="%s" v="%s" />"' % z)
-    osmcode.write("</way>")
+            stdout.write(' <tag k="%s" v="%s" />"' % z)
+    stdout.write("</way>")
 
 if way_num < -1:
-    osmcode.write('<relation id="-1" version="1">')
+    stdout.write('<relation id="-1" version="1">')
     for y in range(way_num, 0):
         role = ("inner", "outer")[int(roles[y])]
-        osmcode.write('<member type="way" ref="%s" role="%s" />' % (y, role))
+        stdout.write('<member type="way" ref="%s" role="%s" />' % (y, role))
 
     for z in multipolygon.iteritems():
-        osmcode.write(' <tag k="%s" v="%s" />"' % z)
+        stdout.write(' <tag k="%s" v="%s" />"' % z)
 
-    osmcode.write('</relation>')
-osmcode.write("</osm>")
-osmcode.flush()
+    stdout.write('</relation>')
+stdout.write("</osm>")
+stdout.flush()
 debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP))
 
 
