@@ -87,15 +87,13 @@ config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
 DOUGLAS_PEUCKER_EPSILON = 0.60
 
 #sensivity for color change, bigger = larger area covered = 20-23-25 is ok
-color_str_bench = 30 # for Benchmark                 
 color_str = 30
 
-tile_size_bench = (256, 256) # for Benchmark
-tile_size = (256, 256)
+
 
 #WMS_SERVER_URL = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&" #alternative server
 
-WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
+# WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
 
 proj = "EPSG:3857"
 
@@ -113,6 +111,9 @@ __status__ = "Development"
 
 PROGRAM_START_TIMESTAMP = datetime.now()
 
+WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
+TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey')
+
 
 try:
     lat = float(argv[1])
@@ -127,16 +128,6 @@ try:
 except (IndexError, ValueError):
     debug("could not read TZoom from commandline, fixed zoom level is used")
     ZOOM = config.getint('WMS', 'fixedzoomlevel')    
- 
-benchmark = ""
-try:
-    benchmark = str(argv[4]).lower()
-except IndexError:
-    pass
-if benchmark == "bench":
-    debug("Running benchmark mode")
-    color_str = color_str_bench
-    tile_size = tile_size_bench
 
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
@@ -145,7 +136,7 @@ if benchmark == "bench":
 multipolygon = POLYGON_TAGS.copy()
 multipolygon["type"] = "multipolygon"
 
-web = WmsCanvas(WMS_SERVER_URL, proj, ZOOM, tile_size, mode = "RGB")
+web = WmsCanvas(WMS_SERVER_URL, proj, ZOOM, TILE_SIZE, mode = "RGB")
 
 BLACK = 0
 WHITE = 1
@@ -153,7 +144,7 @@ was_expanded = True
 
 normales_list = []
 
-mask = WmsCanvas(None, proj, ZOOM, tile_size, mode = "1")
+mask = WmsCanvas(None, proj, ZOOM, TILE_SIZE, mode = "1")
 
 ## Getting start pixel ##
 
@@ -194,7 +185,7 @@ ttz = datetime.now()
 mask.MaxFilter(5)
 debug("B/W MaxFilter: %s" % str(datetime.now() - ttz))
 web = mask
-mask = WmsCanvas(None, proj, ZOOM, tile_size, mode = "1")
+mask = WmsCanvas(None, proj, ZOOM, TILE_SIZE, mode = "1")
 bc = 1
 ttz = datetime.now()
 
