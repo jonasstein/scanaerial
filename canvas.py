@@ -76,36 +76,33 @@ class WmsCanvas:
             return
             
         tile_data = ""
-        if not self.wms_url:
-            tile_data = Image.new(self.mode, (self.tile_width,self.tile_height))
-            debug("no url was found, blanking tile")
-        
-        remote = self.ConstructTileUrl (x, y)
-        debug(remote)
-        ttz = datetime.datetime.now()
-        for dl_retrys in range(0,3):
-            try:
-                contents = urllib2.urlopen(remote).read()
-            except URLError as detail:
-                debug("error while fetching tile ("+x+", "+y+": "+str(detail))
-                debug("retry download"+time_str[dl_retrys]+"time")
-                continue
-                
-            except HTTPError as e:
-                debug("error while fetching tile ("+x+", "+y+": "+str(detail))
-                debug("retry download"+time_str[dl_retrys]+"time")
-                continue
-                
-            debug("Download took %s sec" % str(datetime.datetime.now() - ttz))
-            try:
-                tile_data = Image.open(StringIO.StringIO(contents))
-                
-            except:
-                debug("error while loading tile image-data corrupt")
-                debug("retry download"+time_str[dl_retrys]+"time")
-                continue
-            dl_done = True
-            break
+        if self.wms_url:                  
+            remote = self.ConstructTileUrl (x, y)
+            debug(remote)
+            ttz = datetime.datetime.now()
+            for dl_retrys in range(0,3):
+                try:
+                    contents = urllib2.urlopen(remote).read()
+                except URLError as detail:
+                    debug("error while fetching tile ("+x+", "+y+": "+str(detail))
+                    debug("retry download"+time_str[dl_retrys]+"time")
+                    continue
+                    
+                except HTTPError as e:
+                    debug("error while fetching tile ("+x+", "+y+": "+str(detail))
+                    debug("retry download"+time_str[dl_retrys]+"time")
+                    continue
+                    
+                debug("Download took %s sec" % str(datetime.datetime.now() - ttz))
+                try:
+                    tile_data = Image.open(StringIO.StringIO(contents))
+                    
+                except:
+                    debug("error while loading tile image-data corrupt")
+                    debug("retry download"+time_str[dl_retrys]+"time")
+                    continue
+                dl_done = True
+                break
             
         if not dl_done:
             tile_data = Image.new(self.mode, (self.tile_width,self.tile_height))

@@ -133,8 +133,9 @@ try:
     lon = float(argv[1])
     lat = float(argv[2])
 except IndexError:
-    debug("this program expects two arguments")
-    exit(1)
+    debug("this program expects two arguments, now running debug mode")
+    lon = 1.0
+    lat = 1.0
 benchmark = ""
 try:
     benchmark = str(argv[3]).lower()
@@ -160,67 +161,66 @@ was_expanded = True
 
 normales_list = []
 
-if True:
-    mask = WmsCanvas(None, proj, ZOOM, tile_size, mode = "1")
+mask = WmsCanvas(None, proj, ZOOM, tile_size, mode = "1")
 
-    ## Getting start pixel ##
-    x, y  = web.PixelFrom4326(lon, lat)
-    x, y = int(x), int(y)
+## Getting start pixel ##
+x, y  = web.PixelFrom4326(lon, lat)
+x, y = int(x), int(y)
 #    debug ((x, y))
 #    debug ((lon, lat))
-    initcolour = web[x, y]
+initcolour = web[x, y]
 #    debug(mask[x, y])
-    color_table = {}
-    directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
-    queue = set([(x, y),])
-    mask[x, y] = WHITE
-    ttz = datetime.now()
-    normales_list = set([])
-    norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
-    while queue:
-        px = queue.pop()
-        for d in directions:
-            x1, y1 = px[0]+d[0], px[1]+d[1]
-            if mask[x1, y1] is not WHITE:
-                col = web[x1, y1]
-                if col not in color_table:
-          #debug(col)
-                    try:
-                        color_table[col] = (distance(initcolour, col) <= color_str)
-                    except:
-                        debug(web.tiles)
-                        debug(mask.tiles)
-                if color_table[col]:
-                    mask[x1, y1] = WHITE
-                    queue.add((x1, y1))
-
-    debug("First walk (masking): %s" % str(datetime.now() - ttz) )
-    debug("Color table has %s entries" % len(color_table) )
-    queue = [(x, y), ]
-
-    ttz = datetime.now()
-    #mask_img = mask_img.filter(ImageFilter.MaxFilter(medianfilter_str))
-    mask.MaxFilter(5)
-    debug("B/W MaxFilter: %s" % str(datetime.now() - ttz) )
-    web = mask
-    mask = WmsCanvas(None, proj, ZOOM, tile_size, mode = "1")
-    bc = 1
-    ttz = datetime.now()
-
-    while queue:
-        px = queue.pop()
-        for d in directions:
-            x1, y1 = px[0]+d[0], px[1]+d[1]
-            if mask[x1, y1] is not WHITE and web[x1, y1] is WHITE:
+color_table = {}
+directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+queue = set([(x, y),])
+mask[x, y] = WHITE
+ttz = datetime.now()
+normales_list = set([])
+norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
+while queue:
+    px = queue.pop()
+    for d in directions:
+        x1, y1 = px[0]+d[0], px[1]+d[1]
+        if mask[x1, y1] is not WHITE:
+            col = web[x1, y1]
+            if col not in color_table:
+      #debug(col)
+                try:
+                    color_table[col] = (distance(initcolour, col) <= color_str)
+                except:
+                    debug(web.tiles)
+                    debug(mask.tiles)
+            if color_table[col]:
                 mask[x1, y1] = WHITE
-                bc += 1
-                queue.append((x1, y1))
-            if web[x1, y1] is not WHITE:
-                normales_list.add(((x1 + px[0])/2., \
-                                    (y1 + px[1])/2., \
-                                      norm_dir[px[0] - x1, px[1]-y1]))
-    debug("Found %s normales here."%len(normales_list))
-    debug("Second walk (leaving only poly): %s" % str(datetime.now() - ttz) )
+                queue.add((x1, y1))
+
+debug("First walk (masking): %s" % str(datetime.now() - ttz) )
+debug("Color table has %s entries" % len(color_table) )
+queue = [(x, y), ]
+
+ttz = datetime.now()
+#mask_img = mask_img.filter(ImageFilter.MaxFilter(medianfilter_str))
+mask.MaxFilter(5)
+debug("B/W MaxFilter: %s" % str(datetime.now() - ttz) )
+web = mask
+mask = WmsCanvas(None, proj, ZOOM, tile_size, mode = "1")
+bc = 1
+ttz = datetime.now()
+
+while queue:
+    px = queue.pop()
+    for d in directions:
+        x1, y1 = px[0]+d[0], px[1]+d[1]
+        if mask[x1, y1] is not WHITE and web[x1, y1] is WHITE:
+            mask[x1, y1] = WHITE
+            bc += 1
+            queue.append((x1, y1))
+        if web[x1, y1] is not WHITE:
+            normales_list.add(((x1 + px[0])/2., \
+                                (y1 + px[1])/2., \
+                                  norm_dir[px[0] - x1, px[1]-y1]))
+debug("Found %s normales here."%len(normales_list))
+debug("Second walk (leaving only poly): %s" % str(datetime.now() - ttz) )
 
 osmcode = stdout
 osmcode.write('<osm version="0.6">')
