@@ -16,11 +16,8 @@
 
 import ConfigParser, sys
 config = ConfigParser.ConfigParser()
-<<<<<<< HEAD
 config.readfp(open(sys.path[0]+'\\scanaerial.cfg'))
-=======
-config.readfp(open('/tmp/scanaerial.cfg')) #FIXME Ext_tools can not set the working dir. Need a nice way to fix this.
->>>>>>> fd5a14570581b7b17055f04128e7d59995e5c840
+
 
 
 
