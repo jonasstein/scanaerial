@@ -1,15 +1,15 @@
-* Select areas of similar colour on satellite pictures
+* scanaerial
+ - Scan for areas of similar colour on aerial pictures like OCR for text.
 
 * Requirements
  - JOSM
- - Python
+ - Python 
+   you can run libary_check.py to find out if a library is missing
+ - Ext_tools plug-in for JOSM 
+ - these files you will find the latest releases on
+   https://github.com/jonasstein/scanaerial/archives/master
 
- - fuzzer plug-in for JOSM 
-   http://josm-plugins.googlecode.com/files/fuzzer.jar 
-   Put it into JOSM plugins folder 
-   (for windows, %AppData%\JOSM\plugins) 
-   and enable the plugin in the JOSM settings 
+* Found a bug?
+  https://github.com/jonasstein/scanaerial/issues
 
- - fuzzyselect.py Python script and its dependancies
-   Create a folder fuzzer at %AppData%\JOSM\plugins and save the files there. 
-   git clone git@github.com:jonasstein/fuzzer.git
+* Have fun!
