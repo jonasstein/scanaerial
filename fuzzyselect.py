@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # This program is free software; you can redistribute it and/or modify
@@ -13,11 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
-
-#default values for proportion of requested image
-DLAT = 0.02
-DLON = 0.04
 
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
 #DOUGLAS_PEUCKER_EPSILON = 0.60 # for Benchmark
@@ -315,6 +310,7 @@ if way_num < -1:
 osmcode.write("</osm>")
 osmcode.flush()
 debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP) )
+
 
 """ TODO
 
