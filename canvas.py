@@ -22,6 +22,8 @@ import sys
 #
 import projections
 
+time_str  = {0:" first ", 1:" second ",2:" third and last "}
+
 def debug(st):
     sys.stderr.write(str(st)+"\n")
 
@@ -69,23 +71,51 @@ class WmsCanvas:
         return self.wms_url + "width=%s&height=%s&srs=%s&bbox=%s,%s,%s,%s"%(self.tile_width, self.tile_height, self.proj, a,b,c,d)
 
     def FetchTile(self, x, y):
-        if not (x,y) in self.tiles:
-            im = ""
-            if self.wms_url:
-                remote = self.ConstructTileUrl (x, y)
-                debug(remote)
-                ttz = datetime.datetime.now()
+        dl_done = False
+        if (x,y) in self.tiles:
+            return
+            
+        tile_data = ""
+        if not self.wms_url:
+            tile_data = Image.new(self.mode, (self.tile_width,self.tile_height))
+            debug("no url was found, blanking tile")
+        
+        remote = self.ConstructTileUrl (x, y)
+        debug(remote)
+        ttz = datetime.datetime.now()
+        for dl_retrys in range(0,3):
+            try:
                 contents = urllib2.urlopen(remote).read()
-                debug("Download took %s" % str(datetime.datetime.now() - ttz))
-                im = Image.open(StringIO.StringIO(contents))
-                if im.mode != self.mode:
-                    im = im.convert(self.mode)
-            else:
-                im = Image.new(self.mode, (self.tile_width,self.tile_height))
-                debug("blanking tile")
-            self.tiles[(x,y)] = {}
-            self.tiles[(x,y)]["im"] = im
-            self.tiles[(x,y)]["pix"] = im.load()
+            except URLError as detail:
+                debug("error while fetching tile ("+x+", "+y+": "+str(detail))
+                debug("retry download"+time_str[dl_retrys]+"time")
+                continue
+                
+            except HTTPError as e:
+                debug("error while fetching tile ("+x+", "+y+": "+str(detail))
+                debug("retry download"+time_str[dl_retrys]+"time")
+                continue
+                
+            debug("Download took %s sec" % str(datetime.datetime.now() - ttz))
+            try:
+                tile_data = Image.open(StringIO.StringIO(contents))
+                
+            except:
+                debug("error while loading tile image-data corrupt")
+                debug("retry download"+time_str[dl_retrys]+"time")
+                continue
+            dl_done = True
+            break
+            
+        if not dl_done:
+            tile_data = Image.new(self.mode, (self.tile_width,self.tile_height))
+            debug("could not be loaded, blanking tile")
+            
+        if tile_data.mode != self.mode:
+            tile_data = tile_data.convert(self.mode)
+        self.tiles[(x,y)] = {}
+        self.tiles[(x,y)]["im"] = tile_data
+        self.tiles[(x,y)]["pix"] = tile_data.load()
 
     def PixelAs4326(self,x,y):
             return projections.coords_by_tile(self.zoom, 1.*x/self.tile_width, 1.*y/self.tile_height, self.proj)
