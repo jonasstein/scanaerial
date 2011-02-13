@@ -1,4 +1,4 @@
-﻿#!/usr/bin/python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
 
 # This program is free software; you can redistribute it and/or modify
@@ -25,7 +25,7 @@ def debug(st):
     
 check = True
 
-debug("Checking Python Image Libary")
+debug("searching (Image, ImageFilter) Python Image Libary...")
 try:
     import Image, ImageFilter
     debug("Found.")
@@ -33,10 +33,10 @@ except ImportError:
     check = False
     debug("PIL missing, download at http://www.pythonware.com/products/pil/")
 
-debug("Checking Python Projection Libary")
+debug("searching (pyproj) Python Projection Libary...")
 try:
     import pyproj
-    debug("Found.")
+    debug("found.")
 except ImportError:
     check = False
     debug("Python Projection Libary missing, download at http://code.google.com/p/pyproj/")
