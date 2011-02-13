@@ -14,12 +14,45 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+
+#default values for proportion of requested image
+DLAT = 0.02
+DLON = 0.04
+
+#smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
+#DOUGLAS_PEUCKER_EPSILON = 0.60 # for Benchmark
+DOUGLAS_PEUCKER_EPSILON = 0.60
+
+#sensivity for color change, bigger = larger area covered = 20-23-25 is ok
+color_str_bench = 30 # for Benchmark                 
+color_str = 60
+
+tile_size_bench = (256, 256) # for Benchmark
+tile_size = (512, 512)
+
+#WMS_SERVER_URL = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
+
+#WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&" # for Benchmark
+WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
+
+#have a look at http://wms.latlon.org/ to select your favourite WMS server
+
+#ZOOM = 17 # for Benchmark
+ZOOM = 13
+proj = "EPSG:3857"
+
+POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
+
+#
+# User configuration END
+#========================================
+
 """
 This script will search a area with similar color and send
 it back to JOSM
 """
 
-# __version__ = 0.01 # later...
+# __version__ = 0.01
 __author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W."
 __license__ = "GPL"
 __credits__ = ["Lakewalker-developer-Team","JOSM-developer-Team"]
@@ -92,44 +125,26 @@ def douglas_peucker(nodes, epsilon):
         return [nodes[0], nodes[-1]]
     return nodes
 
+ ### main ###
+    
 PROGRAM_START_TIMESTAMP = datetime.now()
 
-#========================================
-# User configuration START
-## default values for proportion of requested image
-DLAT = 0.02
-DLON = 0.04
+try:
+    lon = float(argv[1])
+    lat = float(argv[2])
+except IndexError:
+    debug("this program expects two arguments")
+    exit(1)
+benchmark = ""
+try:
+    benchmark = str(argv[3]).lower()
+except IndexError:
+    pass
+if benchmark == "bench":
+    debug("Running benchmark mode")
+    color_str = color_str_bench
+    tile_size = tile_size_bench
 
-# smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
-# DOUGLAS_PEUCKER_EPSILON = 0.60 # for Benchmark
-DOUGLAS_PEUCKER_EPSILON = 0.60
-
-# sensivity for color change, bigger = larger area covered = 20-23-25 is ok
-#color_str = 30 # for Benchmark                 
-color_str = 60
-
-tile_size = (256, 256) # for Benchmark
-#tile_size = (512, 512)
-
-# WMS_SERVER_URL = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
-
-# WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&" # for Benchmark
-WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
-
-# have a look at http://wms.latlon.org/ to select your favourite WMS server
-
-# ZOOM = 17 # for Benchmark
-ZOOM = 13
-proj = "EPSG:3857"
-
-POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
-
-#
-# User configuration END
-#========================================
-
-lon = float(argv[1])
-lat = float(argv[2])
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
 # You can use SAS-Planet: click right mouse button on center of forest.
