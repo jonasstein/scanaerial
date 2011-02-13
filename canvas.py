@@ -71,6 +71,7 @@ class WmsCanvas:
 
     def FetchTile(self, x, y):
         dl_done = False
+        server_error = False
 
         if (x, y) in self.tiles:
             return
@@ -84,11 +85,13 @@ class WmsCanvas:
                     contents = urllib2.urlopen(remote).read()
                     
                 except urllib2.URLError as detail:
+                    server_error = True
                     debug("error while fetching tile (" + str(x) + ", " + str(y) + ": " + str(detail))
                     debug("retry download" + time_str[dl_retrys] + "time")
                     continue
 
                 except urllib2.HTTPError as detail:
+                    server_error = True
                     debug("error while fetching tile (" + str(x) + ", " + str(y) + ": " + str(detail))
                     debug("retry download" + time_str[dl_retrys] + "time")
                     continue
@@ -103,11 +106,12 @@ class WmsCanvas:
                     continue
                 dl_done = True
                 break
-
+        
         if not dl_done:
+            if server_error:
+                raise urllib2.URLError(detail)
             tile_data = Image.new(self.mode, (self.tile_width, self.tile_height))
             debug("could not be loaded, blanking tile")
-            raise urllib2.URLError(detail)
 
         if tile_data.mode != self.mode:
             tile_data = tile_data.convert(self.mode)
