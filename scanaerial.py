@@ -135,10 +135,17 @@ PROGRAM_START_TIMESTAMP = datetime.now()
 try:
     lat = float(argv[1])
     lon = float(argv[2])
-except IndexError:
+except IndexError, ValueError:
     debug("this program expects latitude longitude, now running debug mode")
     lon = 1.0
     lat = 1.0
+
+try:
+    ZOOM = int(float(argv[3]))
+except IndexError, ValueError:
+    debug("could not read TZoom from commandline, fixed zoom level is used")
+    ZOOM = config.getint('WMS', 'fixedzoomlevel')    
+ 
 benchmark = ""
 try:
     benchmark = str(argv[4]).lower()
@@ -153,10 +160,7 @@ if benchmark == "bench":
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
 # You can use SAS-Planet: click right mouse button on center of forest.
 
-try:
-    ZOOM = int(float(argv[3]))
-except IndexError:
-    ZOOM = config.getint('WMS', 'fixedzoomlevel')
+
 
 
 
