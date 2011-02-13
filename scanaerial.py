@@ -17,11 +17,6 @@
 import ConfigParser, sys
 config = ConfigParser.ConfigParser()
 config.readfp(open(sys.path[0]+'/scanaerial.cfg'))
-<<<<<<< HEAD
-=======
-
-
->>>>>>> 2f0bb734c8546c1737e622990cb40030cb8a04b0
 
 
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
@@ -333,7 +328,7 @@ debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP) )
 
 
 """ TODO
-TMSZoom
-TMS zoom is integer for all TMS tiles, but JOSM zoomlevel is not neccecarily matches any of TMS tiles.
+for benchmark we can use another configfile (just overwriting the default one)
+
 
 """
