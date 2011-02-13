@@ -16,7 +16,7 @@
 
 import ConfigParser, sys
 config = ConfigParser.ConfigParser()
-config.readfp(open(sys.path[0]+'\\scanaerial.cfg'))
+config.readfp(open(sys.path[0]+'/scanaerial.cfg'))
 
 
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
