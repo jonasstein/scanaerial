@@ -16,7 +16,7 @@
 
 import ConfigParser, sys
 config = ConfigParser.ConfigParser()
-config.readfp(open(sys.path[0]+'\\scanaerial.cfg'))
+config.readfp(open(sys.path[0]+'/scanaerial.cfg'))
 
 
 
