@@ -316,6 +316,7 @@ osmcode.write("</osm>")
 osmcode.flush()
 debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP) )
 
+
 """ TODO
 
 Ext_Tools nice substitute for fuzzer.jar
