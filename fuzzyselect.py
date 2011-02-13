@@ -25,10 +25,10 @@ DOUGLAS_PEUCKER_EPSILON = 0.60
 
 #sensivity for color change, bigger = larger area covered = 20-23-25 is ok
 color_str_bench = 30 # for Benchmark                 
-color_str = 60
+color_str = 30
 
 tile_size_bench = (256, 256) # for Benchmark
-tile_size = (512, 512)
+tile_size = (256, 256)
 
 #WMS_SERVER_URL = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&"
 
@@ -38,7 +38,7 @@ WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
 #have a look at http://wms.latlon.org/ to select your favourite WMS server
 
 #ZOOM = 17 # for Benchmark
-ZOOM = 13
+ZOOM = 14
 proj = "EPSG:3857"
 
 POLYGON_TAGS = {"source":"Bing Imagery traced by fuzzer", "natural":"water"}
@@ -130,10 +130,10 @@ def douglas_peucker(nodes, epsilon):
 PROGRAM_START_TIMESTAMP = datetime.now()
 
 try:
-    lon = float(argv[1])
-    lat = float(argv[2])
+    lat = float(argv[1])
+    lon = float(argv[2])
 except IndexError:
-    debug("this program expects two arguments, now running debug mode")
+    debug("this program expects latitude longitude, now running debug mode")
     lon = 1.0
     lat = 1.0
 benchmark = ""
