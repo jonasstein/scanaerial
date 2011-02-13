@@ -127,7 +127,7 @@ def douglas_peucker(nodes, epsilon):
         return [nodes[0], nodes[-1]]
     return nodes
 
- ### main ###
+### main ###
 
 PROGRAM_START_TIMESTAMP = datetime.now()
 
@@ -194,7 +194,7 @@ while queue:
         if mask[x1, y1] is not WHITE:
             col = web[x1, y1]
             if col not in color_table:
-      #debug(col)
+                #debug(col)
                 try:
                     color_table[col] = (distance(initcolour, col) <= color_str)
                 except:
