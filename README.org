@@ -1,6 +1,13 @@
 * scanaerial
  - Scan for areas of similar colour on aerial pictures like OCR for text.
 
+* Features/Changelog
+
+
+* 1.0.0
+ - TMS Zoomlevel of JOSM is used for the downloaded WMS Tiles
+ - scanaerial works with Ext_tools Plugin 
+
 * Requirements
  - JOSM
  - Python 
