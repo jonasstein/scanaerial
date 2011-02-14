@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # This program is free software; you can redistribute it and/or modify
@@ -17,6 +17,9 @@
 if __name__ == "__main__":
     exit(0)
 
+from sys import setrecursionlimit
+setrecursionlimit(1500000)    
+    
 def distance(a, b):
     """
     Euclidean metric

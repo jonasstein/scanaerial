@@ -72,8 +72,9 @@ try:
     lat = float(argv[1])
     lon = float(argv[2])
 except (IndexError, ValueError):
-    debug("this program expects latitude longitude, now running debug mode") # FIXME break here, if no lat/lon?
-
+    debug("this program expects latitude longitude, now running debug mode")
+    lat = 51.0720147
+    lon = 7.2181707
 try:
     ZOOM = int(float(argv[3]))
 except (IndexError, ValueError):
@@ -130,7 +131,6 @@ debug("Color table has %s entries" % len(color_table))
 queue = [(x, y), ]
 
 ttz = clock()
-#mask_img = mask_img.filter(ImageFilter.MaxFilter(medianfilter_str))
 mask.MaxFilter(5)
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 web = mask
@@ -157,7 +157,7 @@ stdout.write('<osm version="0.6">')
 node_num = 0
 way_num = 0
 
-setrecursionlimit(1500000)   # what happens here exactly? ~JS
+setrecursionlimit(1500000)
 
 outline = []
 
@@ -212,6 +212,9 @@ for lin in outline:
     area = 0
     prx, pry = lin[-1]
     for x, y in lin:
+        #fix glitch
+        x -= 1
+        y -= 1
         area += (x * pry - y * prx) / 2
         prx = x
         pry = y
