@@ -131,7 +131,7 @@ debug("Color table has %s entries" % len(color_table))
 queue = [(x, y), ]
 
 ttz = clock()
-mask.MaxFilter(5)
+#mask.MaxFilter(3)
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 web = mask
 mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
