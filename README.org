@@ -19,11 +19,23 @@
  - Of course you need the scanaerial files too
    you will find the latest releases on
    [[https://github.com/jonasstein/scanaerial/archives/master]]
+   copy them to JOSM/plugins/scanaerial for example
 
-* Links 
- - [[http://wiki.openstreetmap.org/wiki/Scanaerial][OSM Wiki about scanaerial]]
+* Setup
+ - In JOSM press F12 and go to Ext_tools configuration
+ - use this cmdline:
+   /home/stein/.josm/plugins/scanaerial/scanaerial.py {lat} {lon} {TZoom}
+   it will create a new menu item in JOSM. (NB: Syntax may change soon)
+ - for best result you may finetune the values in scanaerial.cfg
+
+* Troubleshooting
+ - if anything fails have a look on the error console. 
+   Scanaerial is very verbous.
 
 * Found a bug?
  - [[https://github.com/jonasstein/scanaerial/issues]]
 
+* Links 
+ - [[http://wiki.openstreetmap.org/wiki/Scanaerial][OSM Wiki about scanaerial]]
+   
 * Have fun!
