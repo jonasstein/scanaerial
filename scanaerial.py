@@ -1,23 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 """
 This script will search a area with similar color and send
 it back to JOSM
 """
+
+__author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W."
+__license__ = "GPL"
+__credits__ = ["Lakewalker-developer-Team", "JOSM-developer-Team"]
+__email__ = "news@jonasstein.de"
+__maintainer__ = "Jonas Stein"
+__status__ = "Development"
+
 
 import ConfigParser, sys
 from datetime import datetime
@@ -60,6 +55,7 @@ def douglas_peucker(nodes, epsilon):
     http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
     Copypasted from lakewalker
     """
+
     farthest_node = None
     farthest_dist = 0
     first = nodes[0]
@@ -83,45 +79,35 @@ config = ConfigParser.ConfigParser()
 config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
 
 
-#smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
-DOUGLAS_PEUCKER_EPSILON = 0.60
-
-#sensivity for color change, bigger = larger area covered = 20-23-25 is ok
-color_str = 30
-
-
-
-#WMS_SERVER_URL = "http://gis.ktimanet.gr/wms/wmsopen/wmsserver.aspx?request=GetMap&" #alternative server
-
-# WMS_SERVER_URL = "http://wms.latlon.org/?layers=bing&"
-
-proj = "EPSG:3857"
-
-POLYGON_TAGS = {"source:tracer":"scanaerial", "source:position":"Bing Imagery", "natural":"water"}
-
-# __version__ = 0.01
-__author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W."
-__license__ = "GPL"
-__credits__ = ["Lakewalker-developer-Team", "JOSM-developer-Team"]
-__email__ = "news@jonasstein.de"
-__maintainer__ = "Jonas Stein"
-__status__ = "Development"
 
 ### main ###
+#this should become a main function in future ##########################################
 
+# SET SOME CONSTANTS
+BLACK = 0
+WHITE = 1
 PROGRAM_START_TIMESTAMP = datetime.now()
 
 WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
+PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
+POLYGON_TAGS = {"source:tracer":"scanaerial", \
+                    "source:aerial":  config.get('WMS', 'wmsname'), \
+                    "natural":"water"}  # FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
+
+
+#smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
+DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
+
+#sensivity for color change, bigger = larger area covered = 20-23-25 is ok
+color_str = config.getfloat('SCAN', 'color_str')
 
 
 try:
     lat = float(argv[1])
     lon = float(argv[2])
 except (IndexError, ValueError):
-    debug("this program expects latitude longitude, now running debug mode")
-    lon = 1.0
-    lat = 1.0
+    debug("this program expects latitude longitude, now running debug mode") # FIXME break here, if no lat/lon?
 
 try:
     ZOOM = int(float(argv[3]))
@@ -136,15 +122,13 @@ except (IndexError, ValueError):
 multipolygon = POLYGON_TAGS.copy()
 multipolygon["type"] = "multipolygon"
 
-web = WmsCanvas(WMS_SERVER_URL, proj, ZOOM, TILE_SIZE, mode = "RGB")
+web = WmsCanvas(WMS_SERVER_URL, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
 
-BLACK = 0
-WHITE = 1
 was_expanded = True
 
 normales_list = []
 
-mask = WmsCanvas(None, proj, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 
 ## Getting start pixel ##
 
@@ -185,7 +169,7 @@ ttz = datetime.now()
 mask.MaxFilter(5)
 debug("B/W MaxFilter: %s" % str(datetime.now() - ttz))
 web = mask
-mask = WmsCanvas(None, proj, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 bc = 1
 ttz = datetime.now()
 
@@ -208,7 +192,7 @@ stdout.write('<osm version="0.6">')
 node_num = 0
 way_num = 0
 
-setrecursionlimit(1500000)
+setrecursionlimit(1500000)   # what happens here exactly? ~JS
 
 outline = []
 
@@ -299,7 +283,10 @@ debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP))
 
 
 """ TODO
-for benchmark we can use another configfile (just overwriting the default one)
+* for benchmark we can use another configfile (just overwriting the default one)
+
+* Zoomlevel to the source? May be soon there are higher resolutions and on different 
+  zoomlevels things look quite different
 
 
 """
