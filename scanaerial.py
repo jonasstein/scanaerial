@@ -157,7 +157,7 @@ stdout.write('<osm version="0.6">')
 node_num = 0
 way_num = 0
 
-setrecursionlimit(1500000)   # what happens here exactly? ~JS
+setrecursionlimit(1500000)
 
 outline = []
 
@@ -212,6 +212,9 @@ for lin in outline:
     area = 0
     prx, pry = lin[-1]
     for x, y in lin:
+        #fix glitch
+        x -= 1
+        y -= 1
         area += (x * pry - y * prx) / 2
         prx = x
         pry = y

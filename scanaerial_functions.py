@@ -17,6 +17,9 @@
 if __name__ == "__main__":
     exit(0)
 
+from sys import setrecursionlimit
+setrecursionlimit(1500000)    
+    
 def distance(a, b):
     """
     Euclidean metric
