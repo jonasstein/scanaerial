@@ -20,6 +20,7 @@ Use this to detect missing libaries which are needed by fuzzer.
 
 import sys
 from debug import debug
+from time import sleep
 
 check = True
 
@@ -41,3 +42,5 @@ except ImportError:
 
 if check:
     print("Everthing works fine, you may run fuzzer now.")
+    
+sleep(5)

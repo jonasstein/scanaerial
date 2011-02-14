@@ -14,6 +14,9 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+if __name__ == "__main__":
+    exit(0)
+
 import pyproj
 
 projs = {
@@ -123,5 +126,3 @@ def transform (line, srs1, srs2):
             ans.append(p)
     return ans
 
-if __name__ == "__main__":
-    pass
