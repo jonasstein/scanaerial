@@ -130,8 +130,7 @@ class WmsCanvas:
         a, b = projections.tile_by_coords((lon, lat), self.zoom, self.proj)
         return a * self.tile_width, b * self.tile_height
 
-    def MaxFilter(self, size = 5):
+    def MaxFilter(self, size = 3):
         tiles = self.tiles.keys()
         for tile in tiles:
-            self.tiles[tile]["im"] = self.tiles[tile]["im"].filter(ImageFilter.MedianFilter(size))
-            self.tiles[tile]["pix"] = self.tiles[tile]["im"].load()
+            self.tiles[tile]["pix"] = self.tiles[tile]["im"].filter(ImageFilter.MedianFilter(size)).load()

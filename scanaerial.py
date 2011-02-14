@@ -72,8 +72,9 @@ try:
     lat = float(argv[1])
     lon = float(argv[2])
 except (IndexError, ValueError):
-    debug("this program expects latitude longitude, now running debug mode") # FIXME break here, if no lat/lon?
-
+    debug("this program expects latitude longitude, now running debug mode")
+    lat = 51.0720147
+    lon = 7.2181707
 try:
     ZOOM = int(float(argv[3]))
 except (IndexError, ValueError):
@@ -130,7 +131,6 @@ debug("Color table has %s entries" % len(color_table))
 queue = [(x, y), ]
 
 ttz = clock()
-#mask_img = mask_img.filter(ImageFilter.MaxFilter(medianfilter_str))
 mask.MaxFilter(5)
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 web = mask
