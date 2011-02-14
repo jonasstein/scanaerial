@@ -1,5 +1,18 @@
-#!/usr/bin/env python
+#!/usr/bin/python
 # -*- coding: utf-8 -*-
+
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """
 This script will search a area with similar color and send
@@ -15,10 +28,11 @@ __status__ = "Development"
 
 
 import ConfigParser, sys
-from datetime import datetime
+from time import clock
 from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
 from debug import debug
+from scanaerial_functions import distance, point_line_distance, douglas_peucker
 
 try:
     import psyco
@@ -27,58 +41,8 @@ try:
 except ImportError:
     pass
 
-def distance(a, b):
-    """ Euclidean metric
-    """
-#    debug((a, b))
-    return  ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
-
-def point_line_distance(point, startline, endline):
-    """
-    check if the "line" is actually a point
-    if not use
-    http://mathworld.wolfram.com/Point-LineDistance2-Dimensional.html
-    Copypasted from lakewalker
-    """
-
-    if (startline == endline):
-        return ((startline[0] - endline[0]) ** 2 + \
-                 (startline[1] - endline[1]) ** 2) ** 0.5
-    else:
-        return abs((endline[0] - startline[0]) * (startline[1] - point[1]) - \
-                     (startline[0] - point[0]) * (endline[1] - startline[1])) / \
-                      ((endline[0] - startline[0]) ** 2 + (endline[1] - startline[1]) ** 2) ** 0.5
-
-def douglas_peucker(nodes, epsilon):
-    """
-    makes a linear curve smoother see also
-    http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
-    Copypasted from lakewalker
-    """
-
-    farthest_node = None
-    farthest_dist = 0
-    first = nodes[0]
-    last = nodes[-1]
-
-    for i in xrange(1, len(nodes) - 1):
-        d = point_line_distance(nodes[i], first, last)
-        if d > farthest_dist:
-            farthest_dist = d
-            farthest_node = i
-
-    if farthest_dist > epsilon:
-        seg_a = douglas_peucker(nodes[0:farthest_node + 1], epsilon)
-        seg_b = douglas_peucker(nodes[farthest_node:-1], epsilon)
-        nodes = seg_a[:-1] + seg_b
-    else:
-        return [nodes[0], nodes[-1]]
-    return nodes
-
 config = ConfigParser.ConfigParser()
 config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
-
-
 
 ### main ###
 #this should become a main function in future ##########################################
@@ -86,14 +50,15 @@ config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
 # SET SOME CONSTANTS
 BLACK = 0
 WHITE = 1
-PROGRAM_START_TIMESTAMP = datetime.now()
+PROGRAM_START_TIMESTAMP = clock()
 
 WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
+#FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
 POLYGON_TAGS = {"source:tracer":"scanaerial", \
                     "source:aerial":  config.get('WMS', 'wmsname'), \
-                    "natural":"water"}  # FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
+                    "natural":"water"} 
 
 
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
@@ -139,7 +104,7 @@ color_table = {}
 directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 queue = set([(x, y), ])
 mask[x, y] = WHITE
-ttz = datetime.now()
+ttz = clock()
 normales_list = set([])
 norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
 
@@ -160,18 +125,18 @@ while queue:
                 mask[x1, y1] = WHITE
                 queue.add((x1, y1))
 
-debug("First walk (masking): %s" % str(datetime.now() - ttz))
+debug("First walk (masking): %s" % str(clock() - ttz))
 debug("Color table has %s entries" % len(color_table))
 queue = [(x, y), ]
 
-ttz = datetime.now()
+ttz = clock()
 #mask_img = mask_img.filter(ImageFilter.MaxFilter(medianfilter_str))
 mask.MaxFilter(5)
-debug("B/W MaxFilter: %s" % str(datetime.now() - ttz))
+debug("B/W MaxFilter: %s" % str(clock() - ttz))
 web = mask
 mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 bc = 1
-ttz = datetime.now()
+ttz = clock()
 
 while queue:
     px = queue.pop()
@@ -186,7 +151,7 @@ while queue:
                                 (y1 + px[1]) / 2., \
                                   norm_dir[px[0] - x1, px[1] - y1]))
 debug("Found %s normales here." % len(normales_list))
-debug("Second walk (leaving only poly): %s" % str(datetime.now() - ttz))
+debug("Second walk (leaving only poly): %s" % str(clock() - ttz))
 
 stdout.write('<osm version="0.6">')
 node_num = 0
@@ -199,7 +164,7 @@ outline = []
 popped = False
 lin = []
 
-tz = datetime.now()
+tz = clock()
 
 while normales_list:
     if not popped:
@@ -240,7 +205,7 @@ if lin:
     if len(lin) >= 4:
         outline.append(lin)
 
-debug("Normales walk: %s, " % (str(datetime.now() - ttz),))
+debug("Normales walk: %s, " % (str(clock() - ttz),))
 
 roles = {}
 for lin in outline:
@@ -250,11 +215,10 @@ for lin in outline:
         area += (x * pry - y * prx) / 2
         prx = x
         pry = y
-
-    for coord in lin:
+        #
         node_num -= 1
-        lon, lat = web.PixelAs4326(coord[0], coord[1])
-        stdout.write('<node id="%s" lon="%s" lat="%s" version="1" />' % (node_num, lon, lat))
+        lon, lat = web.PixelAs4326(x, y)
+        stdout.write('<node id="%s" lon="%s" lat="%s" version="1" />' % (node_num, lon, lat))  
 
     way_num -= 1
     roles[way_num] = (area > 0)
@@ -279,7 +243,7 @@ if way_num < -1:
     stdout.write('</relation>')
 stdout.write("</osm>")
 stdout.flush()
-debug("All done in: %s" % str(datetime.now() - PROGRAM_START_TIMESTAMP))
+debug("All done in: %s" % str(clock() - PROGRAM_START_TIMESTAMP))
 
 
 """ TODO
