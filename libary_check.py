@@ -19,9 +19,7 @@ Use this to detect missing libaries which are needed by fuzzer.
 """
 
 import sys
-
-def debug(st):
-    sys.stderr.write(str(st) + "\n")
+from debug import debug
 
 check = True
 
