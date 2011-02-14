@@ -1,8 +1,7 @@
 * scanaerial
  - Scan for areas of similar colour on aerial pictures like OCR for text.
-
+   
 * Features/Changelog
-
 
 * 1.0.0
  - TMS Zoomlevel of JOSM is used for the downloaded WMS Tiles
@@ -13,10 +12,18 @@
  - Python 
    you can run libary_check.py to find out if a library is missing
  - Ext_tools plug-in for JOSM 
- - these files you will find the latest releases on
-   https://github.com/jonasstein/scanaerial/archives/master
+   {TZoom} is part of Ext_tools since Ext_tools 25274
+   Today (<2011-02-14 Mon>) this is not yet released. You 
+   can find it here: 
+   [[http://svn.openstreetmap.org/applications/editors/josm/dist/ext_tools.jar]]
+ - Of course you need the scanaerial files too
+   you will find the latest releases on
+   [[https://github.com/jonasstein/scanaerial/archives/master]]
+
+* Links 
+ - [[http://wiki.openstreetmap.org/wiki/Scanaerial][OSM Wiki about scanaerial]]
 
 * Found a bug?
-  https://github.com/jonasstein/scanaerial/issues
+ - [[https://github.com/jonasstein/scanaerial/issues]]
 
 * Have fun!
