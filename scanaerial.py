@@ -50,6 +50,9 @@ except:
 ### main ###
 #this should become a main function in future ##########################################
 
+# setrecursionlimit is probably no longer necessary in stable release
+setrecursionlimit(1500000)
+
 # SET SOME CONSTANTS
 BLACK = 0
 WHITE = 1
@@ -73,12 +76,12 @@ color_str = config.getfloat('SCAN', 'color_str')
 
 
 try:
-    lat = float(argv[1])
-    lon = float(argv[2])
+    START_LAT = float(argv[1])
+    START_LON = float(argv[2])
 except (IndexError, ValueError):
     debug("this program expects latitude longitude, now running debug mode")
-    lat = 51.0720147
-    lon = 7.2181707
+    START_LAT = 51.0720147
+    START_LON = 7.2181707
 try:
     ZOOM = int(float(argv[3]))
 except (IndexError, ValueError):
@@ -101,7 +104,7 @@ mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 
 ## Getting start pixel ##
 
-x, y = web.PixelFrom4326(lon, lat)
+x, y = web.PixelFrom4326(START_LON, START_LAT)
 x, y = int(x), int(y)
 INITCOLOUR = web[x, y]
 
@@ -160,7 +163,6 @@ stdout.write('<osm version="0.6">')
 node_num = 0
 way_num = 0
 
-setrecursionlimit(1500000)
 
 outline = []
 
