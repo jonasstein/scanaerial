@@ -59,10 +59,11 @@ WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
 #FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
-POLYGON_TAGS = {"source:tracer":"scanaerial", \
+WAY_TAGS = {"source:tracer":"scanaerial", \
                     "source:aerial":  config.get('WMS', 'wmsname'), \
                     "natural":"water"} 
-
+POLYGON_TAGS = WAY_TAGS.copy()
+POLYGON_TAGS["type"] = "multipolygon"
 
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
 DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
@@ -88,8 +89,7 @@ except (IndexError, ValueError):
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
 # You can use SAS-Planet: click right mouse button on center of forest.
 
-multipolygon = POLYGON_TAGS.copy()
-multipolygon["type"] = "multipolygon"
+
 
 web = WmsCanvas(WMS_SERVER_URL, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
 
@@ -238,7 +238,7 @@ for lin in outline:
         stdout.write('<nd ref="%s" />' % (y))
     stdout.write('<nd ref="%s" />' % (node_num))
     if len(outline) == 1:
-        for z in POLYGON_TAGS.iteritems():
+        for z in WAY_TAGS.iteritems():
             stdout.write(' <tag k="%s" v="%s" />"' % z)
     stdout.write("</way>")
 
@@ -248,7 +248,7 @@ if way_num < -1:
         role = ("inner", "outer")[int(roles[y])]
         stdout.write('<member type="way" ref="%s" role="%s" />' % (y, role))
 
-    for z in multipolygon.iteritems():
+    for z in POLYGON_TAGS.iteritems():
         stdout.write(' <tag k="%s" v="%s" />"' % z)
 
     stdout.write('</relation>')
