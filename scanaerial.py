@@ -48,10 +48,6 @@ except:
     exit(1)
 
 ### main ###
-#this should become a main function in future ##########################################
-
-# setrecursionlimit is probably no longer necessary in stable release
-setrecursionlimit(1500000)
 
 # SET SOME CONSTANTS
 BLACK = 0
@@ -76,12 +72,12 @@ color_str = config.getfloat('SCAN', 'color_str')
 
 
 try:
-    START_LAT = float(argv[1])
-    START_LON = float(argv[2])
+    INPUT_LAT = float(argv[1])
+    INPUT_LON = float(argv[2])
 except (IndexError, ValueError):
     debug("this program expects latitude longitude, now running debug mode")
-    START_LAT = 51.0720147
-    START_LON = 7.2181707
+    INPUT_LAT = 51.0720147
+    INPUT_LON = 7.2181707
 try:
     ZOOM = int(float(argv[3]))
 except (IndexError, ValueError):
@@ -104,7 +100,7 @@ mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 
 ## Getting start pixel ##
 
-x, y = web.PixelFrom4326(START_LON, START_LAT)
+x, y = web.PixelFrom4326(INPUT_LON, INPUT_LAT)
 x, y = int(x), int(y)
 INITCOLOUR = web[x, y]
 
