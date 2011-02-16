@@ -216,6 +216,9 @@ roles = {}
 for lin in outline:
     area = 0
     prx, pry = lin[-1]
+    #fix glitch
+    prx -= 1
+    pry -= 1
     for x, y in lin:
         #fix glitch
         x -= 1
