@@ -21,7 +21,7 @@ it back to JOSM
 
 __author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W."
 __license__ = "GPL"
-__credits__ = ["Lakewalker-developer-Team", "JOSM-developer-Team"]
+__credits__ = ["Lakewalker-developer-Team", "JOSM-developer-Team", "Malenki"]
 __email__ = "news@jonasstein.de"
 __maintainer__ = "Jonas Stein"
 __status__ = "Development"
@@ -44,7 +44,7 @@ try:
     config = ConfigParser.ConfigParser()
     config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
 except:
-    debug('cant read config')
+    debug('could not read config')
     exit(1)
 
 ### main ###
