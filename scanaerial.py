@@ -103,7 +103,8 @@ mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 
 x, y = web.PixelFrom4326(lon, lat)
 x, y = int(x), int(y)
-initcolour = web[x, y]
+INITCOLOUR = web[x, y]
+
 color_table = {}
 DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 queue = set([(x, y), ])
@@ -120,7 +121,7 @@ while queue:
             col = web[x1, y1]
             if col not in color_table:
                 try:
-                    color_table[col] = (distance(initcolour, col) <= color_str)
+                    color_table[col] = (distance(INITCOLOUR, col) <= color_str)
                 except:
                     debug(web.tiles)
                     debug(mask.tiles)
