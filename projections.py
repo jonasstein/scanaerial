@@ -3,7 +3,7 @@
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License.
+# the Free Software Foundation; either version 3 of the License.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -81,7 +81,7 @@ def tile_by_coords((lon, lat), zoom, srs):
     point = from4326((lon, lat), srs)
     point = [point[0] - projected_bounds[0], point[1] - projected_bounds[1]]                       #shifting (0,0)
     maxp = [projected_bounds[2] - projected_bounds[0], projected_bounds[3] - projected_bounds[1]]
-    point = [1. * point[0] / maxp[0], 1. * point[1] / maxp[1]]                                       #normalizing
+    point = [1. * point[0] / maxp[0], 1. * point[1] / maxp[1]]                                     #normalizing
     return point[0] * (2 ** zoom), (1 - point[1]) * (2 ** zoom)
 
 def to4326 (line, srs):

@@ -3,7 +3,7 @@
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License.
+# the Free Software Foundation; either version 3 of the License.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -40,9 +40,12 @@ try:
 
 except ImportError:
     pass
-
-config = ConfigParser.ConfigParser()
-config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
+try:
+    config = ConfigParser.ConfigParser()
+    config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
+except:
+    debug('cant read config')
+    exit(1)
 
 ### main ###
 #this should become a main function in future ##########################################
@@ -131,7 +134,7 @@ debug("Color table has %s entries" % len(color_table))
 queue = [(x, y), ]
 
 ttz = clock()
-#mask.MaxFilter(3)
+mask.MaxFilter(config.getint('SCAN', 'maxfilter_setting'))
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 web = mask
 mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
@@ -190,13 +193,15 @@ while normales_list:
 
     if not found:
         popped = False
-
-        lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
-        debug("line found; simplified to %s" % len(lin))
+        
+        if not config.getint('SCAN', 'deactivate_simplifying'):
+            lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
+			debug("line found; simplified to %s" % len(lin))
+		else:
+			debug("skipped simplifing")
 
         if len(lin) >= 6:
             outline.append(lin)
-        #debug(lin)
         lin = []
 
 if lin:

@@ -3,7 +3,7 @@
 
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License.
+# the Free Software Foundation; either version 3 of the License.
 #
 # This program is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -48,7 +48,7 @@ def douglas_peucker(nodes, epsilon):
     http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
     Copypasted from lakewalker
     """
-
+    
     farthest_node = None
     farthest_dist = 0
     first = nodes[0]
