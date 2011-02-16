@@ -85,8 +85,7 @@ except (IndexError, ValueError):
     ZOOM = config.getint('WMS', 'fixedzoomlevel')  
 
 if ZOOM == 14:
-    ZOOM = 15 #z14 is detection buggy.
-    debug("Since a bug reduce scanquality in z14 I'll try to load z15 tiles")
+    debug("z14 has sometimes a very degraded scan quality due a unknown bug in scanmodul, avoid if possible")
 
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
@@ -220,26 +219,26 @@ for lin in outline:
     area = 0
     prx, pry = lin[-1]
     #fix glitch zoom 16+
-    if ZOOM>16:
-        prx -= 1
-        pry -= 1
-    elif ZOOM==16:
-        prx -= 0.5
-        pry -= 0.5
-    elif ZOOM==15:
-        prx += 0.25
-        pry += 0.25
+#    if ZOOM>16:
+ #       prx -= 1
+#        pry -= 1
+#    elif ZOOM==16:
+#        prx -= 0.5
+#        pry -= 0.5
+#    elif ZOOM==15:
+#        prx += 0.25
+#        pry += 0.25
     for x, y in lin:
         #fix glitch
-        if ZOOM>16:
-            x -= 1
-            y -= 1
-        elif ZOOM==16:
-            x -= 0.5
-            y -= 0.5
-        elif ZOOM==15:
-            x += 0.25
-            y += 0.25
+        # if ZOOM>16:
+            # x -= 1
+            # y -= 1
+        # elif ZOOM==16:
+            # x -= 0.5
+            # y -= 0.5
+        # elif ZOOM==15:
+            # x += 0.25
+            # y += 0.25
         area += (x * pry - y * prx) / 2
         prx = x
         pry = y
