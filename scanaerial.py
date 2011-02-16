@@ -105,7 +105,7 @@ x, y = web.PixelFrom4326(lon, lat)
 x, y = int(x), int(y)
 initcolour = web[x, y]
 color_table = {}
-directions = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 queue = set([(x, y), ])
 mask[x, y] = WHITE
 ttz = clock()
@@ -114,7 +114,7 @@ norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
 
 while queue:
     px = queue.pop()
-    for d in directions:
+    for d in DIRECTIONS:
         x1, y1 = px[0] + d[0], px[1] + d[1]
         if mask[x1, y1] is not WHITE:
             col = web[x1, y1]
@@ -143,7 +143,7 @@ ttz = clock()
 
 while queue:
     px = queue.pop()
-    for d in directions:
+    for d in DIRECTIONS:
         x1, y1 = px[0] + d[0], px[1] + d[1]
         if mask[x1, y1] is not WHITE and web[x1, y1] is WHITE:
             mask[x1, y1] = WHITE
