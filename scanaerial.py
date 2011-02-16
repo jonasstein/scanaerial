@@ -119,7 +119,6 @@ while queue:
         if mask[x1, y1] is not WHITE:
             col = web[x1, y1]
             if col not in color_table:
-                #debug(col)
                 try:
                     color_table[col] = (distance(initcolour, col) <= color_str)
                 except:
@@ -196,9 +195,9 @@ while normales_list:
         
         if not config.getint('SCAN', 'deactivate_simplifying'):
             lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
-			debug("line found; simplified to %s" % len(lin))
-		else:
-			debug("skipped simplifing")
+            debug("line found; simplified to %s" % len(lin))
+        else:
+            debug("skipped simplifing")
 
         if len(lin) >= 6:
             outline.append(lin)
