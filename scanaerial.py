@@ -63,7 +63,7 @@ PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
 #FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
 WAY_TAGS = {"source:tracer":"scanaerial", \
-                    "source:aerial":  config.get('WMS', 'wmsname'), \
+                    "source:position":  config.get('WMS', 'wmsname'), \
                     "natural":"water"} 
 POLYGON_TAGS = WAY_TAGS.copy()
 POLYGON_TAGS["type"] = "multipolygon"
@@ -139,7 +139,8 @@ queue = [(x, y), ]
 ttz = clock()
 mask.MaxFilter(config.getint('SCAN', 'maxfilter_setting'))
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
-web = mask
+del web
+oldmask = mask
 mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 bc = 1
 ttz = clock()
@@ -148,11 +149,11 @@ while queue:
     px = queue.pop()
     for d in DIRECTIONS:
         x1, y1 = px[0] + d[0], px[1] + d[1]
-        if mask[x1, y1] is not WHITE and web[x1, y1] is WHITE:
+        if mask[x1, y1] is not WHITE and oldmask[x1, y1] is WHITE:
             mask[x1, y1] = WHITE
             bc += 1
             queue.append((x1, y1))
-        if web[x1, y1] is not WHITE:
+        if oldmask[x1, y1] is not WHITE:
             normales_list.add(((x1 + px[0]) / 2., \
                                 (y1 + px[1]) / 2., \
                                   norm_dir[px[0] - x1, px[1] - y1]))
@@ -230,7 +231,7 @@ for lin in outline:
         pry = y
         #
         node_num -= 1
-        lon, lat = web.PixelAs4326(x, y)
+        lon, lat = oldmask.PixelAs4326(x, y)
         stdout.write('<node id="%s" lon="%s" lat="%s" version="1" />' % (node_num, lon, lat))  
 
     way_num -= 1
