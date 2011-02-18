@@ -1,5 +1,7 @@
 * scanaerial
  - Scan for areas of similar colour on aerial pictures like OCR for text.
+ - recognition works well with lakes it will not produce good results with
+   wood in near future.
    
 * Features/Changelog
   
@@ -28,7 +30,7 @@
    /home/stein/.josm/plugins/scanaerial/scanaerial.py {lat} {lon} {TZoom}
    It will create a new menu item in JOSM. (NB: Syntax may change soon)
  - For best result you may finetune the values in scanaerial.cfg
-   
+
 * Troubleshooting
  - if anything fails have a look on the error console. 
    Scanaerial is very verbous.
