@@ -26,8 +26,7 @@
 
 * Setup
  - In JOSM press F12 and go to Ext_tools configuration
- - use this cmdline:
-   /home/stein/.josm/plugins/scanaerial/scanaerial.py {lat} {lon} {TZoom}
+ - use this cmdline:/home/<username>/.josm/plugins/ext_tools/scanaerial/scanaerial.py {lat} {lon} {TZoom}
    It will create a new menu item in JOSM. (NB: Syntax may change soon)
  - For best result you may finetune the values in scanaerial.cfg
 
