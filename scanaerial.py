@@ -84,9 +84,6 @@ except (IndexError, ValueError):
     debug("could not read TZoom from commandline, fixed zoom level is used")
     ZOOM = config.getint('WMS', 'fixedzoomlevel')  
 
-if ZOOM == 14:
-    debug("z14 has sometimes a very degraded scan quality due a unknown bug in scanmodul, avoid if possible")
-
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
 # You can use SAS-Planet: click right mouse button on center of forest.
