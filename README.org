@@ -5,7 +5,7 @@
    
 * Features/Changelog
   
-* 1.0.0
+** 1.0.0
  - TMS Zoomlevel of JOSM is used for the downloaded WMS Tiles
  - scanaerial works with Ext_tools Plugin 
 
@@ -29,6 +29,18 @@
  - use this cmdline:/home/<username>/.josm/plugins/ext_tools/scanaerial/scanaerial.py {lat} {lon} {TZoom}
    It will create a new menu item in JOSM. (NB: Syntax may change soon)
  - For best result you may finetune the values in scanaerial.cfg
+
+ | key                     | function                                                |
+ |-------------------------+---------------------------------------------------------|
+ | fixedzoomlevel          | use this zoomlevel, if Ext_tools did not tell via TZoom |
+ | wmsname                 | name of the WMS Source (only for the tag string)        |
+ | wms_server_url          | you may choose your favourite WMS server                |
+ | projection              | projection that is used on the WMS server               |
+ | tile_sizex,-y           | leave it to 256 unless you know what you do             |
+ | douglas_peucker_epsilon | maximum roughness for smoothening the line              |
+ | colour_str              | colour sensitivity                                      |
+ | maxfilter_setting       | how many times should we apply the smoothening?         |
+
 
 * Troubleshooting
  - if anything fails have a look on the error console. 

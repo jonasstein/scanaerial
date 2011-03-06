@@ -67,8 +67,8 @@ POLYGON_TAGS["type"] = "multipolygon"
 #smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
 DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
 
-#sensivity for color change, bigger = larger area covered = 20-23-25 is ok
-color_str = config.getfloat('SCAN', 'color_str')
+#sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
+colour_str = config.getfloat('SCAN', 'colour_str')
 
 
 try:
@@ -107,7 +107,7 @@ x, y = web.PixelFrom4326(INPUT_LON, INPUT_LAT)
 x, y = int(x), int(y)
 INITCOLOUR = web[x, y]
 
-color_table = {}
+colour_table = {}
 DIRECTIONS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
 queue = set([(x, y), ])
 mask[x, y] = WHITE
@@ -121,18 +121,18 @@ while queue:
         x1, y1 = px[0] + d[0], px[1] + d[1]
         if mask[x1, y1] is not WHITE:
             col = web[x1, y1]
-            if col not in color_table:
+            if col not in colour_table:
                 try:
-                    color_table[col] = (distance(INITCOLOUR, col) <= color_str)
+                    colour_table[col] = (distance(INITCOLOUR, col) <= colour_str)
                 except:
                     debug(web.tiles)
                     debug(mask.tiles)
-            if color_table[col]:
+            if colour_table[col]:
                 mask[x1, y1] = WHITE
                 queue.add((x1, y1))
 
 debug("First walk (masking): %s" % str(clock() - ttz))
-debug("Color table has %s entries" % len(color_table))
+debug("Colour table has %s entries" % len(colour_table))
 queue = [(x, y), ]
 
 ttz = clock()
