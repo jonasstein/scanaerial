@@ -215,25 +215,12 @@ roles = {}
 for lin in outline:
     area = 0
     prx, pry = lin[-1]
-    #fix glitch zoom 16+
-    if ZOOM>16:
-        prx -= 1
-        pry -= 1
-    elif ZOOM==16:
-        prx -= 0.5
-        pry -= 0.5
+
     for x, y in lin:
-        #fix glitch
-        if ZOOM>16:
-            x -= 1
-            y -= 1
-        elif ZOOM==16:
-            x -= 0.5
-            y -= 0.5
         area += (x * pry - y * prx) / 2
         prx = x
         pry = y
-        #
+
         node_num -= 1
         lon, lat = oldmask.PixelAs4326(x, y)
         stdout.write('<node id="%s" lon="%s" lat="%s" version="1" />' % (node_num, lon, lat))  
