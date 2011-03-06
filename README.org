@@ -11,7 +11,7 @@
 
 * Requirements
  - JOSM
- - Python. You can run libary_check.py to find out if a library is missing
+ - Python. You can run library_check.py to find out if a library is missing
  - Ext_tools plug-in for JOSM. 
    {TZoom} is part of Ext_tools since Ext_tools 25274
    Today (<2011-02-14 Mon>) this is not yet released. 
