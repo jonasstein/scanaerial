@@ -25,9 +25,12 @@
    Copy them to JOSM/plugins/scanaerial for example.
 
 * Setup
+ - unzip the contents of the downloaded archive to the JOSM Plugin directory 
+   Linux Users put it to: ~/.josm/plugins/ext_tools/scanaerial
  - In JOSM press F12 and go to Ext_tools configuration
  - use this cmdline:/home/<username>/.josm/plugins/ext_tools/scanaerial/scanaerial.py {lat} {lon} {TZoom}
    It will create a new menu item in JOSM. (NB: Syntax may change soon)
+   Due to a bug in Ext_tools you can not write "~" instead of "home"
  - For best result you may finetune the values in scanaerial.cfg
 
  | key                     | function                                                |
