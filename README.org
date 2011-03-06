@@ -4,7 +4,9 @@
    wood in near future.
    
 * Features/Changelog
-  
+** 1.0.1
+ - inner and outer Multipolygon work
+
 ** 1.0.0
  - TMS Zoomlevel of JOSM is used for the downloaded WMS Tiles
  - scanaerial works with Ext_tools Plugin 
@@ -51,6 +53,10 @@
 
 * Found a bug?
  - [[https://github.com/jonasstein/scanaerial/issues]]
+ - if you want to contribute, please 
+   make a fork, 
+   make your changes in the fork
+   do a pull request on this project site, or contact the author
 
 * Links 
  - [[http://wiki.openstreetmap.org/wiki/Scanaerial][OSM Wiki about scanaerial]]
