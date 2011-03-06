@@ -41,6 +41,6 @@ except ImportError:
     debug("Python Projection Libary missing, download at http://code.google.com/p/pyproj/")
 
 if check:
-    print("Everthing works fine, you may run fuzzer now.")
+    print("Everthing works fine, you may run scanaerial now.")
     
 sleep(5)
