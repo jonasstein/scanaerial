@@ -33,6 +33,8 @@ from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
 from debug import debug
 from scanaerial_functions import distance, point_line_distance, douglas_peucker
+import math
+
 
 try:
     import psyco
@@ -46,6 +48,30 @@ try:
 except:
     debug('could not read config')
     exit(1)
+
+
+def newdistance(u, v):
+    """
+    colourdistance 
+    a,b = [r,b,g]
+    """
+    a = rgbto123(u)
+    b = rgbto123(v)
+#    result =  ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+    result =  (10*(a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
+    debug("distance: " + str(result))
+    return result
+
+def rgbto123(colour):
+    """
+    convert a colour from rgb to I1I2I3 like here http://de.wikipedia.org/wiki/I1I2I3-Farbraum
+    """
+    debug(colour[0])
+    i1 = float(colour[0] + colour[1] + colour[2]) / 3
+    i2 = float(colour[0] - colour[1]) / 2
+    i3 = float(2 * colour[1] - colour[0] - colour[2]) / 4
+    return i1,i2,i3
+    
 
 ### main ###
 
@@ -68,7 +94,7 @@ POLYGON_TAGS["type"] = "multipolygon"
 DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
 
 #sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
-colour_str = config.getfloat('SCAN', 'colour_str')
+colour_str = 25 # config.getfloat('SCAN', 'colour_str')
 
 
 try:
@@ -120,7 +146,7 @@ while queue:
             col = web[x1, y1]
             if col not in colour_table:
                 try:
-                    colour_table[col] = (distance(INITCOLOUR, col) <= colour_str)
+                    colour_table[col] = (newdistance(INITCOLOUR, col) <= colour_str)
                 except:
                     debug(web.tiles)
                     debug(mask.tiles)
