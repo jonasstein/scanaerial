@@ -1,0 +1,89 @@
+% SiSU 3.0
+
+@title: Scanaerial Manual
+
+@creator: Scanaerial Project <https://github.com/jonasstein/scanaerial>
+
+@date:
+ :published: 2011-03-08
+
+@publisher: Scanaerial Project  <https://github.com/jonasstein/scanaerial>
+
+@make:
+ :bold: /Scanaerial|JOSM|OSM|Ext_tools/
+ :italics: /fooooo/
+ :num_top: 1
+
+
+:A~ @title
+
+
+:B~ About
+
+  _* Scan for areas of similar colour on aerial pictures like OCR for text.
+
+  _* recognition works well with lakes, but it will not produce good results with wood in near future.
+
+
+:B~ Features/Changelog
+
+
+:B~ Requirements
+
+  # JOSM
+
+  # Python ~{You can run library_check.py to find out if a library is missing}~
+
+  # Ext_tools plugin version >= 25274 for JOSM 
+
+  # Of course you need the scanaerial files too. You will find the latest releases on 
+  { Github }https://github.com/jonasstein/scanaerial/archives/master Copy them to JOSM/plugins/scanaerial for example
+
+
+:B~ Setup
+
+  # unzip the contents of the downloaded archive to the JOSM Plugin directory 
+   Linux Users put it to: .josm/plugins/ext_tools/scanaerial
+
+  # In JOSM press F12 and go to Ext_tools configuration
+
+  # use this cmdline:/home/<username>/.josm/plugins/ext_tools/scanaerial/scanaerial.py {lat} {lon} {TZoom}
+   It will create a new menu item in JOSM. (NB: Syntax may change soon)
+   Due to a bug in Ext_tools you can not write "~" instead of "home"
+
+  # For best result you may finetune the values in scanaerial.cfg
+
+:B~ Configurationfile
+
+{table~h 30; 70;}
+ key                     | function                                                
+ fixedzoomlevel          | use this zoomlevel, if Ext_tools did not tell via TZoom 
+ wmsname                 | name of the WMS Source (only for the tag string)        
+ wms_server_url          | you may choose your favourite WMS server                
+ projection              | projection that is used on the WMS server               
+ tile_sizex,-y           | leave it to 256 unless you know what you do             
+ douglas_peucker_epsilon | maximum roughness for smoothening the line              
+ colour_str              | colour sensitivity                                      
+ maxfilter_setting       | how many times should we apply the smoothening?         
+
+
+
+:B~ Troubleshooting
+
+ _* if anything fails have a look at the error console. 
+    Scanaerial is very verbous.
+
+:B~ Found a bug?
+
+ _* https://github.com/jonasstein/scanaerial/issues
+
+ _* if you want to contribute, please 
+   make a fork, 
+   make your changes in the fork
+   do a pull request on this project site, or contact the author
+
+:B~ Links 
+
+ _* OSM Wiki about scanaerial http://wiki.openstreetmap.org/wiki/Scanaerial 
+   
+:B~ Have fun!
