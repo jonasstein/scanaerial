@@ -49,28 +49,6 @@ except:
 
 ### main ###
 
-# SET SOME CONSTANTS
-BLACK = 0
-WHITE = 1
-PROGRAM_START_TIMESTAMP = clock()
-
-WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
-PROJECTION = config.get('WMS', 'projection')
-TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
-#FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
-WAY_TAGS = {"source:tracer":"scanaerial", \
-                    "source:position":  config.get('WMS', 'wmsname'), \
-                    "natural":"water"} 
-POLYGON_TAGS = WAY_TAGS.copy()
-POLYGON_TAGS["type"] = "multipolygon"
-
-#smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
-DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
-
-#sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
-colour_str = config.getfloat('SCAN', 'colour_str')
-
-
 try:
     INPUT_LAT = float(argv[1])
     INPUT_LON = float(argv[2])
@@ -87,6 +65,31 @@ except (IndexError, ValueError):
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
 # You can use SAS-Planet: click right mouse button on center of forest.
+
+
+
+# SET SOME CONSTANTS
+BLACK = 0
+WHITE = 1
+PROGRAM_START_TIMESTAMP = clock()
+
+WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
+PROJECTION = config.get('WMS', 'projection')
+TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
+#FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
+WAY_TAGS = {"source:tracer":"scanaerial", \
+                    "source:zoomlevel": ZOOM , \
+                    "source:position":  config.get('WMS', 'wmsname'), \
+                    "natural":"water"} 
+POLYGON_TAGS = WAY_TAGS.copy()
+POLYGON_TAGS["type"] = "multipolygon"
+
+#smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
+DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
+
+#sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
+colour_str = config.getfloat('SCAN', 'colour_str')
+
 
 
 
@@ -248,14 +251,12 @@ if way_num < -1:
     stdout.write('</relation>')
 stdout.write("</osm>")
 stdout.flush()
+
 debug("All done in: %s" % str(clock() - PROGRAM_START_TIMESTAMP))
 
 
 """ TODO
-* for benchmark we can use another configfile (just overwriting the default one)
-
 * Zoomlevel to the source? May be soon there are higher resolutions and on different 
   zoomlevels things look quite different
-
 
 """
