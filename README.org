@@ -4,6 +4,10 @@
    wood in near future.
    
 * Features/Changelog
+** 1.0.2
+ - added tag source:zoomlevel. You see sometimes very different details
+   in different zoomlevels.
+
 ** 1.0.1
  - inner and outer Multipolygon work
 
@@ -46,7 +50,12 @@
  | colour_str              | colour sensitivity                                      |
  | maxfilter_setting       | how many times should we apply the smoothening?         |
 
-
+* Roadmap
+ - collect recipies for better algorithms
+ - try to exclude douglas-peucker from scanaerial. josm can do that.
+ - try different algorithms in forks and compare them. 
+ - try to access cached wms tiles from josm
+ 
 * Troubleshooting
  - if anything fails have a look on the error console. 
    Scanaerial is very verbous.
