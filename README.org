@@ -19,21 +19,16 @@
  - JOSM
  - Python. You can run library_check.py to find out if a library is missing
  - Ext_tools plug-in for JOSM. 
-   {TZoom} is part of Ext_tools since Ext_tools 25274
-   Today (<2011-02-14 Mon>) this is not yet released. 
-   You can find it here: 
-   [[http://svn.openstreetmap.org/applications/editors/josm/dist/ext_tools.jar]]
-   If you use a older release substitude {TZoom} by the Zoomlevel 
-   you want: 13 for example.
+   {TZoom} is part of Ext_tools since Ext_tools 25274 
  - Of course you need the scanaerial files too.
    You will find the latest releases on
    [[https://github.com/jonasstein/scanaerial/archives/master]]
    Copy them to JOSM/plugins/scanaerial for example.
 
 * Setup
- - unzip the contents of the downloaded archive to the JOSM Plugin directory 
-   Linux Users put it to: ~/.josm/plugins/ext_tools/scanaerial
- - In JOSM press F12 and go to Ext_tools configuration
+ - unzip the contents of the downloaded archive to the JOSM plugin directory 
+   Linux users put it to: ~/.josm/plugins/ext_tools/scanaerial
+ - start JOSM, press F12 and go to Ext_tools configuration
  - use this cmdline:/home/<username>/.josm/plugins/ext_tools/scanaerial/scanaerial.py {lat} {lon} {TZoom}
    It will create a new menu item in JOSM. (NB: Syntax may change soon)
    Due to a bug in Ext_tools you can not write "~" instead of "home"
@@ -55,7 +50,7 @@
  - try to exclude douglas-peucker from scanaerial. josm can do that.
  - try different algorithms in forks and compare them. 
  - try to access cached wms tiles from josm
- 
+ - rewrite in c(++) and/or java
 * Troubleshooting
  - if anything fails have a look on the error console. 
    Scanaerial is very verbous.
