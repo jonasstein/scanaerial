@@ -51,6 +51,7 @@
  - try different algorithms in forks and compare them. 
  - try to access cached wms tiles from josm
  - rewrite in c(++) and/or java
+ - find betatester
 * Troubleshooting
  - if anything fails have a look on the error console. 
    Scanaerial is very verbous.
