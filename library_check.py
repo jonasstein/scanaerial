@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """
-Use this to detect missing libaries which are needed by fuzzer.
+Use this to detect missing libaries which are needed by scanaerial.
 """
 
 import sys
