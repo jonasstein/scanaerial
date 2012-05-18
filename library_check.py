@@ -24,7 +24,7 @@ from time import sleep
 
 check = True
 
-debug("searching (Image, ImageFilter) Python Image Libary...")
+debug("searching (Image, ImageFilter) Python Image Library...")
 try:
     import Image, ImageFilter
     debug("Found.")
@@ -32,13 +32,13 @@ except ImportError:
     check = False
     debug("PIL missing, download at http://www.pythonware.com/products/pil/")
 
-debug("searching (pyproj) Python Projection Libary...")
+debug("searching (pyproj) Python Projection Library...")
 try:
     import pyproj
     debug("found.")
 except ImportError:
     check = False
-    debug("Python Projection Libary missing, download at http://code.google.com/p/pyproj/")
+    debug("Python Projection Library missing, download at http://code.google.com/p/pyproj/")
 
 if check:
     print("Everthing works fine, you may run scanaerial now.")
