@@ -15,7 +15,7 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 """
-This script will search a area with similar color and send
+This script will search an area with similar color and send
 it back to JOSM
 """
 
