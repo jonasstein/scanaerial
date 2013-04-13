@@ -17,9 +17,16 @@
 if __name__ == "__main__":
     exit(0)
 
-import Image, ImageFilter
-import urllib2
-import StringIO
+from PIL import Image, ImageFilter
+try:
+    from urllib.request import urlopen
+    from urllib.error import URLError
+    from urllib.error import HTTPError
+except ImportError:
+    from urllib2 import urlopen
+    from urllib2 import URLError
+    from urllib2 import HTTPError
+import io
 import datetime
 import sys
 from time import clock
@@ -85,15 +92,15 @@ class WmsCanvas:
             start = clock()
             for dl_retrys in range(0, 3):
                 try:
-                    contents = urllib2.urlopen(remote).read()
+                    contents = urlopen(remote).read()
                     
-                except urllib2.URLError as detail:
+                except URLError as detail:
                     server_error = True
                     debug("error while fetching tile (" + str(x) + ", " + str(y) + ": " + str(detail))
                     debug("retry download" + time_str[dl_retrys] + "time")
                     continue
 
-                except urllib2.HTTPError as detail:
+                except HTTPError as detail:
                     server_error = True
                     debug("error while fetching tile (" + str(x) + ", " + str(y) + ": " + str(detail))
                     debug("retry download" + time_str[dl_retrys] + "time")
@@ -101,7 +108,7 @@ class WmsCanvas:
 
                 debug("Download took %s sec" % str(clock() - start))
                 try:
-                    tile_data = Image.open(StringIO.StringIO(contents))
+                    tile_data = Image.open(io.BytesIO(contents))
 
                 except:
                     debug("error while loading tile image-data corrupt")
@@ -112,7 +119,7 @@ class WmsCanvas:
         
         if not dl_done:
             if server_error:
-                raise urllib2.URLError(detail)
+                raise URLError(detail)
             tile_data = Image.new(self.mode, (self.tile_width, self.tile_height))
             debug("could not be loaded, blanking tile")
 
@@ -127,10 +134,9 @@ class WmsCanvas:
             return projections.coords_by_tile(self.zoom, 1. * x / self.tile_width, 1. * y / self.tile_height, self.proj)
 
     def PixelFrom4326(self, lon, lat):
-        a, b = projections.tile_by_coords((lon, lat), self.zoom, self.proj)
+        a, b = projections.tile_by_coords(lon, lat, self.zoom, self.proj)
         return a * self.tile_width, b * self.tile_height
 
     def MaxFilter(self, size = 3):
-        tiles = self.tiles.keys()
-        for tile in tiles:
+        for tile in self.tiles:
             self.tiles[tile]["pix"] = self.tiles[tile]["im"].filter(ImageFilter.MedianFilter(size)).load()

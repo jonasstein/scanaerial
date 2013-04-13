@@ -26,8 +26,11 @@ __email__ = "news@jonasstein.de"
 __maintainer__ = "Jonas Stein"
 __status__ = "Development"
 
-
-import ConfigParser, sys
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
+import sys
 from time import clock
 from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
@@ -41,7 +44,7 @@ try:
 except ImportError:
     pass
 try:
-    config = ConfigParser.ConfigParser()
+    config = configparser.ConfigParser()
     config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
 except:
     debug('could not read config')
@@ -235,7 +238,7 @@ for lin in outline:
         stdout.write('<nd ref="%s" />' % (y))
     stdout.write('<nd ref="%s" />' % (node_num))
     if len(outline) == 1:
-        for z in WAY_TAGS.iteritems():
+        for z in WAY_TAGS.items():
             stdout.write(' <tag k="%s" v="%s" />"' % z)
     stdout.write("</way>")
 
@@ -245,7 +248,7 @@ if way_num < -1:
         role = ("inner", "outer")[int(roles[y])]
         stdout.write('<member type="way" ref="%s" role="%s" />' % (y, role))
 
-    for z in POLYGON_TAGS.iteritems():
+    for z in POLYGON_TAGS.items():
         stdout.write(' <tag k="%s" v="%s" />"' % z)
 
     stdout.write('</relation>')
