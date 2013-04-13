@@ -38,8 +38,9 @@ time_str = {0:" first ", 1:" second ", 2:" third and last "}
 
 class WmsCanvas:
 
-    def __init__(self, wms_url = None, proj = "EPSG:4326", zoom = 4, tile_size = None, mode = "RGBA"):
+    def __init__(self, wms_url = None, proj = "EPSG:4326", zoom = 4, tile_size = None, mode = "RGBA", bing_api = False):
         self.wms_url = wms_url
+        self.bing_api = bing_api
         self.zoom = zoom
         self.proj = proj
         self.mode = mode
@@ -76,8 +77,36 @@ class WmsCanvas:
         raise KeyError("internal error while fetching tile")
 
     def ConstructTileUrl (self, x, y):
+        if self.bing_api:
+            return self.wms_url.replace("{quadkey}", self.ConstructQuadkey(x, y))
         a, b, c, d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
         return self.wms_url + "width=%s&height=%s&srs=%s&bbox=%s,%s,%s,%s" % (self.tile_width, self.tile_height, self.proj, a, b, c, d)
+
+    def baseN(self, num, b, numerals="0123456789abcdefghijklmnopqrstuvwxyz"):
+        """Convert num into string with base b"""
+        return ((num == 0) and numerals[0]) or (self.baseN(num // b, b, numerals).lstrip(numerals[0]) + numerals[num % b])
+
+    def ConstructQuadkey (self, tileX, tileY):
+        """return Bing quadkey for given integer tile
+        see (http://msdn.microsoft.com/en-us/library/bb259689.aspx)"""
+        
+        tileX2 = self.baseN(tileX, 2)
+        tileY2 = self.baseN(tileY, 2)
+        
+        pad = max(len(tileX2), len(tileY2))
+        
+        tileX2 = "0"*(pad - len(tileX2)) + tileX2
+        tileY2 = "0"*(pad - len(tileY2)) + tileY2
+        
+        quadkey2 = ""
+        for x in range(pad):
+            quadkey2 = quadkey2 + tileY2[x] + tileX2[x]
+        
+        quadkey = int(quadkey2, 2)
+        
+        quadkey4 = self.baseN(quadkey, 4)
+        
+        return quadkey4
 
     def FetchTile(self, x, y):
         dl_done = False
@@ -131,10 +160,16 @@ class WmsCanvas:
         
 
     def PixelAs4326(self, x, y):
-            return projections.coords_by_tile(self.zoom, 1. * x / self.tile_width, 1. * y / self.tile_height, self.proj)
+        scale = 1.0
+        if self.bing_api:
+            scale = 0.5
+        return projections.coords_by_tile(self.zoom, scale * x / self.tile_width, scale * y / self.tile_height, self.proj)
 
     def PixelFrom4326(self, lon, lat):
         a, b = projections.tile_by_coords(lon, lat, self.zoom, self.proj)
+        if self.bing_api:
+            a = a*2
+            b = b*2
         return a * self.tile_width, b * self.tile_height
 
     def MaxFilter(self, size = 3):

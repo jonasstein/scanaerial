@@ -17,6 +17,11 @@
 if __name__ == "__main__":
     exit(0)
 
+try:
+    from urllib.request import urlopen
+except ImportError:
+    from urllib2 import urlopen
+import xml.etree.ElementTree as ElementTree
 from sys import setrecursionlimit
 setrecursionlimit(1500000)    
     
@@ -67,3 +72,12 @@ def douglas_peucker(nodes, epsilon):
     else:
         return [nodes[0], nodes[-1]]
     return nodes
+
+def bing_img_url(resturl):
+    xml = urlopen(resturl).read()
+    root = ElementTree.fromstring(xml)
+    namespace = "{http://schemas.microsoft.com/search/local/ws/rest/v1}"
+    imgurl = root.findall('.//{0}ImageryMetadata/{0}ImageUrl'.format(namespace))[0].text
+    subdomain = root.findall('.//{0}ImageryMetadata/{0}ImageUrlSubdomains/{0}string'.format(namespace))[0].text
+    imgurl = imgurl.replace("{subdomain}",subdomain)
+    return imgurl

@@ -35,7 +35,7 @@ from time import clock
 from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
 from debug import debug
-from scanaerial_functions import distance, point_line_distance, douglas_peucker
+from scanaerial_functions import distance, point_line_distance, douglas_peucker, bing_img_url
 
 try:
     import psyco
@@ -77,6 +77,10 @@ WHITE = 1
 PROGRAM_START_TIMESTAMP = clock()
 
 WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
+BING_API = config.getboolean('WMS', 'bing_api')
+if BING_API:
+    BING_URL = config.get('WMS', 'bing_url')
+    WMS_SERVER_URL = bing_img_url(BING_URL)
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
 #FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
@@ -96,13 +100,13 @@ colour_str = config.getfloat('SCAN', 'colour_str')
 
 
 
-web = WmsCanvas(WMS_SERVER_URL, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
+web = WmsCanvas(WMS_SERVER_URL, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB", bing_api = BING_API)
 
 was_expanded = True
 
 normales_list = []
 
-mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1", bing_api = BING_API)
 
 ## Getting start pixel ##
 
@@ -143,7 +147,7 @@ mask.MaxFilter(config.getint('SCAN', 'maxfilter_setting'))
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 del web
 oldmask = mask
-mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1", bing_api = BING_API)
 bc = 1
 ttz = clock()
 
