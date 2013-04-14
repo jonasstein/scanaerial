@@ -52,9 +52,9 @@ class WmsCanvas:
 
     def __setitem__ (self, x, v):
         x, y = x
-        tile_x = int(x / self.tile_height)
+        tile_x = x // self.tile_height
         x = x % self.tile_height
-        tile_y = int(y / self.tile_width)
+        tile_y = y // self.tile_width
         y = y % self.tile_width
         try:
             self.tiles[(tile_x, tile_y)]["pix"][x, y] = v
@@ -64,9 +64,9 @@ class WmsCanvas:
 
     def __getitem__ (self, x):
         x, y = x
-        tile_x = int(x / self.tile_height)
+        tile_x = x // self.tile_height
         x = x % self.tile_height
-        tile_y = int(y / self.tile_width)
+        tile_y = y // self.tile_width
         y = y % self.tile_width
         for i in range(0, 3):
             try:
