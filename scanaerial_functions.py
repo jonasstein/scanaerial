@@ -54,7 +54,7 @@ def douglas_peucker(nodes, epsilon):
     first = nodes[0]
     last = nodes[-1]
 
-    for i in xrange(1, len(nodes) - 1):
+    for i in range(1, len(nodes) - 1):
         d = point_line_distance(nodes[i], first, last)
         if d > farthest_dist:
             farthest_dist = d

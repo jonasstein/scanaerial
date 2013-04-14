@@ -26,7 +26,7 @@ check = True
 
 debug("searching (Image, ImageFilter) Python Image Library...")
 try:
-    import Image, ImageFilter
+    from PIL import Image, ImageFilter
     debug("Found.")
 except ImportError:
     check = False

@@ -44,8 +44,8 @@ def tile_by_bbox(bbox, zoom, srs):
     """
     Converts bbox from 4326 format to tile numbers of given zoom level, with correct wraping around 180th meridian
     """
-    a1, a2 = tile_by_coords((bbox[0], bbox[1]), zoom, srs)
-    b1, b2 = tile_by_coords((bbox[2], bbox[3]), zoom, srs)
+    a1, a2 = tile_by_coords(bbox[0], bbox[1], zoom, srs)
+    b1, b2 = tile_by_coords(bbox[2], bbox[3], zoom, srs)
     if b1 < a1:
         b1 += 2 ** (zoom - 1)
     return a1, a2, b1, b2
@@ -69,7 +69,7 @@ def coords_by_tile(z, x, y, srs):
     projected_coords = [(normalized_tile[0] * maxp[0]) + projected_bounds[0], (normalized_tile[1] * maxp[1]) + projected_bounds[1]]
     return to4326(projected_coords, srs)
 
-def tile_by_coords((lon, lat), zoom, srs):
+def tile_by_coords(lon, lat, zoom, srs):
     """
     Converts EPSG:4326 latitude and longitude to tile number of srs-projected tile pyramid.
     lat, lon - EPSG:4326 coordinates of a point
