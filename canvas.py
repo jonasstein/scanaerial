@@ -93,7 +93,7 @@ class WmsCanvas:
         tileX2 = self.baseN(tileX, 2)
         tileY2 = self.baseN(tileY, 2)
         
-        pad = max(len(tileX2), len(tileY2))
+        pad = self.zoom
         
         tileX2 = "0"*(pad - len(tileX2)) + tileX2
         tileY2 = "0"*(pad - len(tileY2)) + tileY2
@@ -105,8 +105,9 @@ class WmsCanvas:
         quadkey = int(quadkey2, 2)
         
         quadkey4 = self.baseN(quadkey, 4)
-        
-        return quadkey4
+        quadkey4_pad = "0"*(pad - len(str(quadkey4))) + str(quadkey4)
+
+        return quadkey4_pad
 
     def FetchTile(self, x, y):
         dl_done = False
