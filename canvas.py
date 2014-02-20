@@ -119,6 +119,7 @@ class WmsCanvas:
         tile_data = ""
         if self.wms_url:
             remote = self.ConstructTileUrl (x, y)
+            debug("URL: " + remote)
             start = clock()
             for dl_retrys in range(0, 3):
                 try:
