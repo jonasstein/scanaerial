@@ -38,13 +38,17 @@ time_str = {0:" first ", 1:" second ", 2:" third and last "}
 
 class WmsCanvas:
 
-    def __init__(self, wms_url = None, proj = "EPSG:4326", zoom = 4, tile_size = None, mode = "RGBA"):
-        self.wms_url = wms_url
+    def __init__(self, ms_url = None, tms = 1, proj = "EPSG:4326", zoom = 4, tile_size = None, mode = "RGBA"):
+        self.ms_url = ms_url
+        self.tms = tms
         self.zoom = zoom
         self.proj = proj
         self.mode = mode
         self.tile_height = 256
         self.tile_width = 256
+        
+        if tms:
+            self.zoom = zoom + 1
 
         if tile_size:
             self.tile_width, self.tile_height = tile_size
@@ -76,8 +80,15 @@ class WmsCanvas:
         raise KeyError("internal error while fetching tile")
 
     def ConstructTileUrl (self, x, y):
-        a, b, c, d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
-        return self.wms_url + "width=%s&height=%s&srs=%s&bbox=%s,%s,%s,%s" % (self.tile_width, self.tile_height, self.proj, a, b, c, d)
+        if self.tms:
+            url = self.ms_url
+            url = url.replace("{zoom}", str(self.zoom - 1))
+            url = url.replace("{x}", str(x))
+            url = url.replace("{y}", str(y))
+            return url
+        else:
+            a, b, c, d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
+            return self.ms_url + "width=%s&height=%s&srs=%s&bbox=%s,%s,%s,%s" % (self.tile_width, self.tile_height, self.proj, a, b, c, d)
 
     def FetchTile(self, x, y):
         dl_done = False
@@ -87,7 +98,7 @@ class WmsCanvas:
             return
 
         tile_data = ""
-        if self.wms_url:
+        if self.ms_url:
             remote = self.ConstructTileUrl (x, y)
             start = clock()
             for dl_retrys in range(0, 3):
