@@ -19,7 +19,7 @@ This script will search an area with similar color and send
 it back to JOSM
 """
 
-__author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W."
+__author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W., Vort"
 __license__ = "GPL"
 __credits__ = ["Lakewalker-developer-Team", "JOSM-developer-Team", "Malenki"]
 __email__ = "news@jonasstein.de"
@@ -63,7 +63,7 @@ try:
     ZOOM = int(float(argv[3]))
 except (IndexError, ValueError):
     debug("could not read TZoom from commandline, fixed zoom level is used")
-    ZOOM = config.getint('WMS', 'fixedzoomlevel')  
+    ZOOM = config.getint('WMS', 'fixedzoomlevel')
 
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
@@ -76,13 +76,23 @@ BLACK = 0
 WHITE = 1
 PROGRAM_START_TIMESTAMP = clock()
 
-WMS_SERVER_URL = config.get('WMS', 'wms_server_url')
+if config.has_option('WMS', 'wms_server_url') and config.has_option('WMS', 'wmsname'):
+	TMS = 0
+	MS_NAME = config.get('WMS', 'wmsname')
+	MS_SERVER_URL = config.get('WMS', 'wms_server_url')
+elif config.has_option('WMS', 'tms_server_url') and config.has_option('WMS', 'tmsname'):
+	TMS = 1
+	MS_NAME = config.get('WMS', 'tmsname')
+	MS_SERVER_URL = config.get('WMS', 'tms_server_url')
+else:
+	raise Exception('(wms_server_url and wmsname) or (tms_server_url and tmsname) must be specified')
+
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
 #FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
 WAY_TAGS = {"source:tracer":"scanaerial", \
-                    "source:zoomlevel": ZOOM , \
-                    "source:position":  config.get('WMS', 'wmsname'), \
+                    "source:zoomlevel": ZOOM, \
+                    "source:position": MS_NAME, \
                     "natural":"water"} 
 POLYGON_TAGS = WAY_TAGS.copy()
 POLYGON_TAGS["type"] = "multipolygon"
@@ -93,16 +103,19 @@ DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
 #sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
 colour_str = config.getfloat('SCAN', 'colour_str')
 
+TIMEOUT = 0
+if config.has_option('SCAN', 'timeout'):
+    TIMEOUT = config.getint('SCAN', 'timeout')
 
 
 
-web = WmsCanvas(WMS_SERVER_URL, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
+web = WmsCanvas(MS_SERVER_URL, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
 
 was_expanded = True
 
 normales_list = []
 
-mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 
 ## Getting start pixel ##
 
@@ -118,7 +131,12 @@ ttz = clock()
 normales_list = set([])
 norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
 
+start_time = clock()
 while queue:
+    if TIMEOUT:
+        if clock() - start_time > TIMEOUT:
+		    raise Exception('Timeout!')
+
     px = queue.pop()
     for d in DIRECTIONS:
         x1, y1 = px[0] + d[0], px[1] + d[1]
@@ -143,7 +161,7 @@ mask.MaxFilter(config.getint('SCAN', 'maxfilter_setting'))
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 del web
 oldmask = mask
-mask = WmsCanvas(None, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 bc = 1
 ttz = clock()
 
