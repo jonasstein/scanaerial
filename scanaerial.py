@@ -63,7 +63,7 @@ try:
     ZOOM = int(float(argv[3]))
 except (IndexError, ValueError):
     debug("could not read TZoom from commandline, fixed zoom level is used")
-    ZOOM = config.getint('WMS', 'fixedzoomlevel')  
+    ZOOM = config.getint('WMS', 'fixedzoomlevel')
 
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
@@ -103,6 +103,9 @@ DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
 #sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
 colour_str = config.getfloat('SCAN', 'colour_str')
 
+TIMEOUT = 0
+if config.has_option('SCAN', 'timeout'):
+    TIMEOUT = config.getint('SCAN', 'timeout')
 
 
 
@@ -128,7 +131,12 @@ ttz = clock()
 normales_list = set([])
 norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
 
+start_time = clock()
 while queue:
+    if TIMEOUT:
+        if clock() - start_time > TIMEOUT:
+		    raise Exception('Timeout!')
+
     px = queue.pop()
     for d in DIRECTIONS:
         x1, y1 = px[0] + d[0], px[1] + d[1]
