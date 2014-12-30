@@ -4,6 +4,10 @@
    wood in near future.
    
 * Features/Changelog
+
+** 2.0-beta.1
+ - TMS support added, new timeout check. Thanks to Vort
+ 
 ** 1.0.3
  - malenki et al. reported that latlon.org does not work at the moment/anymore (?)
    geoposer.com is another bing WMS server, but somone has to figure out how to use it with scanaerial.
