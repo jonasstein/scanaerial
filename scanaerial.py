@@ -35,7 +35,7 @@ from time import clock
 from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
 from debug import debug
-from scanaerial_functions import distance, point_line_distance, douglas_peucker
+from scanaerial_functions import distance, point_line_distance, douglas_peucker, bing_img_url
 
 try:
     import psyco
@@ -87,12 +87,11 @@ SERVER_API = config.get('WMS', 'server_api')
 if (SERVER_API != "wms") and (SERVER_API != "tms") and (SERVER_API != "bing"):
     raise Exception('server_api must be one of: wms, tms, bing')
 
-TMS = 0
-if SERVER_API == "tms":
-    TMS = 1
-
 SERVER_NAME = config.get('WMS', 'server_name')
 SERVER_URL = config.get('WMS', 'server_url')
+
+if SERVER_API == "bing":
+    SERVER_URL = bing_img_url(SERVER_URL)
 
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
@@ -116,13 +115,13 @@ if config.has_option('SCAN', 'timeout'):
 
 
 
-web = WmsCanvas(SERVER_URL, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
+web = WmsCanvas(SERVER_URL, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
 
 was_expanded = True
 
 normales_list = []
 
-mask = WmsCanvas(None, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 
 ## Getting start pixel ##
 
@@ -168,7 +167,7 @@ mask.MaxFilter(config.getint('SCAN', 'maxfilter_setting'))
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 del web
 oldmask = mask
-mask = WmsCanvas(None, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 bc = 1
 ttz = clock()
 

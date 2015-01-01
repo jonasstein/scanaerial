@@ -38,9 +38,9 @@ time_str = {0:" first ", 1:" second ", 2:" third and last "}
 
 class WmsCanvas:
 
-    def __init__(self, ms_url = None, tms = 1, proj = "EPSG:4326", zoom = 4, tile_size = None, mode = "RGBA"):
-        self.ms_url = ms_url
-        self.tms = tms
+    def __init__(self, server_url = None, server_api = None, proj = "EPSG:4326", zoom = 4, tile_size = None, mode = "RGBA"):
+        self.server_url = server_url
+        self.server_api = server_api
         self.zoom = zoom
         self.proj = proj
         self.mode = mode
@@ -77,15 +77,44 @@ class WmsCanvas:
         raise KeyError("internal error while fetching tile")
 
     def ConstructTileUrl (self, x, y):
-        if self.tms:
-            url = self.ms_url
+        if self.server_api == "tms":
+            url = self.server_url
             url = url.replace("{zoom}", str(self.zoom))
             url = url.replace("{x}", str(x))
             url = url.replace("{y}", str(y))
             return url
-        else:
+        elif self.server_api == "wms":
             a, b, c, d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
-            return self.ms_url + "width=%s&height=%s&srs=%s&bbox=%s,%s,%s,%s" % (self.tile_width, self.tile_height, self.proj, a, b, c, d)
+            return self.server_url + "width=%s&height=%s&srs=%s&bbox=%s,%s,%s,%s" % (self.tile_width, self.tile_height, self.proj, a, b, c, d)
+        else:
+            return self.server_url.replace("{quadkey}", self.ConstructQuadkey(x, y))
+
+    def baseN(self, num, b, numerals="0123456789abcdefghijklmnopqrstuvwxyz"):
+        """Convert num into string with base b"""
+        return ((num == 0) and numerals[0]) or (self.baseN(num // b, b, numerals).lstrip(numerals[0]) + numerals[num % b])
+
+    def ConstructQuadkey (self, tileX, tileY):
+        """return Bing quadkey for given integer tile
+        see (http://msdn.microsoft.com/en-us/library/bb259689.aspx)"""
+        
+        tileX2 = self.baseN(tileX, 2)
+        tileY2 = self.baseN(tileY, 2)
+        
+        pad = self.zoom
+        
+        tileX2 = "0"*(pad - len(tileX2)) + tileX2
+        tileY2 = "0"*(pad - len(tileY2)) + tileY2
+        
+        quadkey2 = ""
+        for x in range(pad):
+            quadkey2 = quadkey2 + tileY2[x] + tileX2[x]
+        
+        quadkey = int(quadkey2, 2)
+        
+        quadkey4 = self.baseN(quadkey, 4)
+        quadkey4_pad = "0"*(pad - len(str(quadkey4))) + str(quadkey4)
+
+        return quadkey4_pad
 
     def FetchTile(self, x, y):
         dl_done = False
@@ -95,8 +124,9 @@ class WmsCanvas:
             return
 
         tile_data = ""
-        if self.ms_url:
+        if self.server_url:
             remote = self.ConstructTileUrl (x, y)
+            debug("URL: " + remote)
             start = clock()
             for dl_retrys in range(0, 3):
                 try:
@@ -140,13 +170,13 @@ class WmsCanvas:
 
     def PixelAs4326(self, x, y):
         scale = 1.0
-        if self.tms:
+        if (self.server_api == "tms") or (self.server_api == "bing"):
             scale = 0.5
         return projections.coords_by_tile(self.zoom, scale * x / self.tile_width, scale * y / self.tile_height, self.proj)
 
     def PixelFrom4326(self, lon, lat):
         scale = 1.0
-        if self.tms:
+        if (self.server_api == "tms") or (self.server_api == "bing"):
             scale = 2.0
         a, b = projections.tile_by_coords(lon, lat, self.zoom, self.proj)
         return scale * a * self.tile_width, scale * b * self.tile_height
