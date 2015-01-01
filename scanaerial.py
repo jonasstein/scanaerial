@@ -76,23 +76,30 @@ BLACK = 0
 WHITE = 1
 PROGRAM_START_TIMESTAMP = clock()
 
-if config.has_option('WMS', 'wms_server_url') and config.has_option('WMS', 'wmsname'):
-	TMS = 0
-	MS_NAME = config.get('WMS', 'wmsname')
-	MS_SERVER_URL = config.get('WMS', 'wms_server_url')
-elif config.has_option('WMS', 'tms_server_url') and config.has_option('WMS', 'tmsname'):
-	TMS = 1
-	MS_NAME = config.get('WMS', 'tmsname')
-	MS_SERVER_URL = config.get('WMS', 'tms_server_url')
-else:
-	raise Exception('(wms_server_url and wmsname) or (tms_server_url and tmsname) must be specified')
+if not config.has_option('WMS', 'server_api'):
+    raise Exception('server_api must be specified')
+if not config.has_option('WMS', 'server_name'):
+    raise Exception('server_name must be specified')
+if not config.has_option('WMS', 'server_url'):
+    raise Exception('server_url must be specified')
+
+SERVER_API = config.get('WMS', 'server_api')
+if (SERVER_API != "wms") and (SERVER_API != "tms") and (SERVER_API != "bing"):
+    raise Exception('server_api must be one of: wms, tms, bing')
+
+TMS = 0
+if SERVER_API == "tms":
+    TMS = 1
+
+SERVER_NAME = config.get('WMS', 'server_name')
+SERVER_URL = config.get('WMS', 'server_url')
 
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
 #FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
 WAY_TAGS = {"source:tracer":"scanaerial", \
                     "source:zoomlevel": ZOOM, \
-                    "source:position": MS_NAME, \
+                    "source:position": SERVER_NAME, \
                     "natural":"water"} 
 POLYGON_TAGS = WAY_TAGS.copy()
 POLYGON_TAGS["type"] = "multipolygon"
@@ -109,7 +116,7 @@ if config.has_option('SCAN', 'timeout'):
 
 
 
-web = WmsCanvas(MS_SERVER_URL, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
+web = WmsCanvas(SERVER_URL, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
 
 was_expanded = True
 
@@ -135,7 +142,7 @@ start_time = clock()
 while queue:
     if TIMEOUT:
         if clock() - start_time > TIMEOUT:
-		    raise Exception('Timeout!')
+            raise Exception('Timeout!')
 
     px = queue.pop()
     for d in DIRECTIONS:

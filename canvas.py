@@ -46,9 +46,6 @@ class WmsCanvas:
         self.mode = mode
         self.tile_height = 256
         self.tile_width = 256
-        
-        if tms:
-            self.zoom = zoom + 1
 
         if tile_size:
             self.tile_width, self.tile_height = tile_size
@@ -82,7 +79,7 @@ class WmsCanvas:
     def ConstructTileUrl (self, x, y):
         if self.tms:
             url = self.ms_url
-            url = url.replace("{zoom}", str(self.zoom - 1))
+            url = url.replace("{zoom}", str(self.zoom))
             url = url.replace("{x}", str(x))
             url = url.replace("{y}", str(y))
             return url
@@ -142,11 +139,17 @@ class WmsCanvas:
         
 
     def PixelAs4326(self, x, y):
-            return projections.coords_by_tile(self.zoom, 1. * x / self.tile_width, 1. * y / self.tile_height, self.proj)
+        scale = 1.0
+        if self.tms:
+            scale = 0.5
+        return projections.coords_by_tile(self.zoom, scale * x / self.tile_width, scale * y / self.tile_height, self.proj)
 
     def PixelFrom4326(self, lon, lat):
+        scale = 1.0
+        if self.tms:
+            scale = 2.0
         a, b = projections.tile_by_coords(lon, lat, self.zoom, self.proj)
-        return a * self.tile_width, b * self.tile_height
+        return scale * a * self.tile_width, scale * b * self.tile_height
 
     def MaxFilter(self, size = 3):
         for tile in self.tiles:
