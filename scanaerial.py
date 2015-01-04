@@ -95,11 +95,12 @@ if SERVER_API == "bing":
 
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
-#FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
+
 WAY_TAGS = {"source:tracer":"scanaerial", \
                     "source:zoomlevel": ZOOM, \
-                    "source:position": SERVER_NAME, \
-                    "natural":"water"} 
+                    "source:position": SERVER_NAME}
+WAY_TAGS = dict(WAY_TAGS.items() + config.items('TAGS'))
+
 POLYGON_TAGS = WAY_TAGS.copy()
 POLYGON_TAGS["type"] = "multipolygon"
 
