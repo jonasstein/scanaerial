@@ -109,9 +109,9 @@ DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
 #sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
 colour_str = config.getfloat('SCAN', 'colour_str')
 
-TIMEOUT = 0
-if config.has_option('SCAN', 'timeout'):
-    TIMEOUT = config.getint('SCAN', 'timeout')
+SIZE_LIMIT = 100
+if config.has_option('SCAN', 'size_limit'):
+    SIZE_LIMIT = config.getint('SCAN', 'size_limit')
 
 
 
@@ -137,15 +137,18 @@ ttz = clock()
 normales_list = set([])
 norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
 
-start_time = clock()
 while queue:
-    if TIMEOUT:
-        if clock() - start_time > TIMEOUT:
-            raise Exception('Timeout!')
-
     px = queue.pop()
     for d in DIRECTIONS:
         x1, y1 = px[0] + d[0], px[1] + d[1]
+        if (x - SIZE_LIMIT) > x1:
+            continue
+        if (x + SIZE_LIMIT) < x1:
+            continue
+        if (y - SIZE_LIMIT) > y1:
+            continue
+        if (y + SIZE_LIMIT) < y1:
+            continue
         if mask[x1, y1] is not WHITE:
             col = web[x1, y1]
             if col not in colour_table:
