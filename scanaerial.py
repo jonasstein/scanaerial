@@ -241,11 +241,15 @@ while normales_list:
         lin = []
 
 if lin:
-    lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
-    if len(lin) >= 2:
-        if lin[len(lin) - 1] == lin[len(lin) - 2]:
-            lin.pop()
-    debug("line post-found; simplified to %s" % len(lin))
+    if not config.getint('SCAN', 'deactivate_simplifying'):
+        lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
+        if len(lin) >= 2:
+            if lin[len(lin) - 1] == lin[len(lin) - 2]:
+                lin.pop()
+        debug("line post-found; simplified to %s" % len(lin))
+    else:
+        debug("skipped simplifing")
+
     if len(lin) >= 4:
         outline.append(lin)
 
