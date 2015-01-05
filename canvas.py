@@ -82,6 +82,7 @@ class WmsCanvas:
             url = url.replace("{zoom}", str(self.zoom))
             url = url.replace("{x}", str(x))
             url = url.replace("{y}", str(y))
+            url = url.replace("{-y}", str((1 << self.zoom) - 1 - y))
             return url
         elif self.server_api == "wms":
             a, b, c, d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
