@@ -228,10 +228,9 @@ while normales_list:
         popped = False
         
         if not config.getint('SCAN', 'deactivate_simplifying'):
+            lin.append(lin[0])
             lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
-            if len(lin) >= 2:
-                if lin[len(lin) - 1] == lin[len(lin) - 2]:
-                    lin.pop()
+            lin.pop()
             debug("line found; simplified to %s" % len(lin))
         else:
             debug("skipped simplifing")
@@ -242,10 +241,9 @@ while normales_list:
 
 if lin:
     if not config.getint('SCAN', 'deactivate_simplifying'):
+        lin.append(lin[0])
         lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
-        if len(lin) >= 2:
-            if lin[len(lin) - 1] == lin[len(lin) - 2]:
-                lin.pop()
+        lin.pop()
         debug("line post-found; simplified to %s" % len(lin))
     else:
         debug("skipped simplifing")
