@@ -29,6 +29,7 @@ except ImportError:
 import io
 import datetime
 import sys
+import binascii
 from time import clock
 from debug import debug
 #
@@ -38,7 +39,10 @@ time_str = {0:" first ", 1:" second ", 2:" third and last "}
 
 class WmsCanvas:
 
-    def __init__(self, server_url = None, server_api = None, proj = "EPSG:4326", zoom = 4, tile_size = None, mode = "RGBA"):
+    def __init__(self, server_url = None, server_api = None, proj = "EPSG:4326", zoom = 4, \
+                 tile_size = None, mode = "RGBA", empty_tile_bytes = 0, empty_tile_checksum = 0):
+        self.empty_tile_bytes = empty_tile_bytes
+        self.empty_tile_checksum = empty_tile_checksum
         self.server_url = server_url
         self.server_api = server_api
         self.zoom = zoom
@@ -146,6 +150,12 @@ class WmsCanvas:
                     continue
 
                 debug("Download took %s sec" % str(clock() - start))
+
+                if len(contents) == self.empty_tile_bytes:
+                    crc32 = binascii.crc32(contents)
+                    if crc32 == self.empty_tile_checksum:
+                        raise Exception('Empty tile found, aborting!')
+
                 try:
                     tile_data = Image.open(io.BytesIO(contents))
 

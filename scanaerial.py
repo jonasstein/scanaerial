@@ -93,6 +93,13 @@ SERVER_URL = config.get('WMS', 'server_url')
 if SERVER_API == "bing":
     SERVER_URL = bing_img_url(SERVER_URL)
 
+EMPTY_TILE_BYTES = 0
+if config.has_option('WMS', 'empty_tile_bytes'):
+    EMPTY_TILE_BYTES = config.getint('WMS', 'empty_tile_bytes')
+EMPTY_TILE_CHECKSUM = 0
+if config.has_option('WMS', 'empty_tile_checksum'):
+    EMPTY_TILE_CHECKSUM = config.getint('WMS', 'empty_tile_checksum')
+
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
 
@@ -116,13 +123,13 @@ if config.has_option('SCAN', 'size_limit'):
 
 
 
-web = WmsCanvas(SERVER_URL, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
+web = WmsCanvas(SERVER_URL, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, "RGB", EMPTY_TILE_BYTES, EMPTY_TILE_CHECKSUM)
 
 was_expanded = True
 
 normales_list = []
 
-mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, "1")
 
 ## Getting start pixel ##
 
@@ -171,7 +178,7 @@ mask.MaxFilter(config.getint('SCAN', 'maxfilter_setting'))
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 del web
 oldmask = mask
-mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, "1")
 bc = 1
 ttz = clock()
 
