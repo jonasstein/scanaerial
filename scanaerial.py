@@ -43,9 +43,15 @@ try:
 
 except ImportError:
     pass
+
+try:
+    CONFIG_NAME = argv[4]
+except IndexError:
+    CONFIG_NAME = "scanaerial.cfg"
+
 try:
     config = configparser.ConfigParser()
-    config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
+    config.readfp(open(sys.path[0] + '/' + CONFIG_NAME))
 except:
     debug('could not read config')
     exit(1)
@@ -59,11 +65,18 @@ except (IndexError, ValueError):
     debug("this program expects latitude longitude, now running debug mode")
     INPUT_LAT = 51.0720147
     INPUT_LON = 7.2181707
+
+FIXED_ZOOM = 11
+if config.has_option('WMS', 'fixedzoomlevel'):
+    FIXED_ZOOM = config.getint('WMS', 'fixedzoomlevel')
+
 try:
     ZOOM = int(float(argv[3]))
 except (IndexError, ValueError):
-    debug("could not read TZoom from commandline, fixed zoom level is used")
-    ZOOM = config.getint('WMS', 'fixedzoomlevel')
+    ZOOM = FIXED_ZOOM
+
+if ZOOM == 0:
+    ZOOM = FIXED_ZOOM
 
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
