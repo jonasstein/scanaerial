@@ -29,6 +29,7 @@ except ImportError:
 import io
 import datetime
 import sys
+import random
 import binascii
 from time import clock
 from debug import debug
@@ -87,6 +88,17 @@ class WmsCanvas:
             url = url.replace("{x}", str(x))
             url = url.replace("{y}", str(y))
             url = url.replace("{-y}", str((1 << self.zoom) - 1 - y))
+
+            sw1 = "{switch:"
+            sw2 = url.find(sw1)
+            if sw2 != -1:
+                sw3 = url.find("}", sw2)
+                if sw3 != -1:
+                    sw4 = url[sw2 : sw3 + 1]
+                    sw5 = url[sw2 + len(sw1) : sw3]
+                    sw6 = random.choice(sw5.split(","))
+                    url = url.replace(sw4, sw6)
+
             return url
         elif self.server_api == "wms":
             a, b, c, d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
