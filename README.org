@@ -5,6 +5,14 @@
    
 * Features/Changelog
 
+** 2.1-beta-1
+ - Bing support merged in. Thanks to Cybjit and IrlJidel
+ - Improved TMS support ({-y} and {switch:} options added)
+ - Timeout check replaced by size limit feature: now it is possible to trace rivers
+ - Tags settings moved to configuration file
+ - Fixed bugs in Douglas-Peucker algorithm
+ - Detection of empty tiles added
+
 ** 2.0-beta.1
  - TMS support added, new timeout check. Thanks to Vort
  
@@ -44,16 +52,21 @@
    Due to a bug in Ext_tools you can not write "~" instead of "home"
  - For best result you may finetune the values in scanaerial.cfg
 
- | key                     | function                                                |
- |-------------------------+---------------------------------------------------------|
- | fixedzoomlevel          | use this zoomlevel, if Ext_tools did not tell via TZoom |
- | wmsname                 | name of the WMS Source (only for the tag string)        |
- | wms_server_url          | you may choose your favourite WMS server                |
- | projection              | projection that is used on the WMS server               |
- | tile_sizex,-y           | leave it to 256 unless you know what you do             |
- | douglas_peucker_epsilon | maximum roughness for smoothening the line              |
- | colour_str              | colour sensitivity                                      |
- | maxfilter_setting       | how many times should we apply the smoothening?         |
+ | key                     | function                                                  |
+ |-------------------------+-----------------------------------------------------------|
+ | fixedzoomlevel          | use this zoomlevel, if Ext_tools did not tell via TZoom   |
+ | server_api              | access method of map server: wms, tms or bing             |
+ | server_name             | name of the map server (only for the tag string)          |
+ | server_url              | half-link for WMS, JOSM-like address for TMS              |
+ | empty_tile_bytes        | size of empty tile (in bytes) for current map server      |
+ | empty_tile_checksum     | checksum of empty tile file (algorithm: CRC32)            |
+ | projection              | projection that is used on the map server                 |
+ | tile_sizex,-y           | leave it to 256 unless you know what you do               |
+ | douglas_peucker_epsilon | maximum roughness for smoothening the line                |
+ | deactivate_simplifying  | deactivate Douglas-Peucker algorithm (only for debugging) |
+ | colour_str              | colour sensitivity (depends on contrast of images)        |
+ | maxfilter_setting       | median filter size (noise reduction strength)             |
+ | size_limit              | maximum size of produced object                           |
 
 * Roadmap
  - collect recipies for better algorithms

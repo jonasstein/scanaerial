@@ -29,6 +29,8 @@ except ImportError:
 import io
 import datetime
 import sys
+import random
+import binascii
 from time import clock
 from debug import debug
 #
@@ -38,7 +40,10 @@ time_str = {0:" first ", 1:" second ", 2:" third and last "}
 
 class WmsCanvas:
 
-    def __init__(self, server_url = None, server_api = None, proj = "EPSG:4326", zoom = 4, tile_size = None, mode = "RGBA"):
+    def __init__(self, server_url = None, server_api = None, proj = "EPSG:4326", zoom = 4, \
+                 tile_size = None, mode = "RGBA", empty_tile_bytes = 0, empty_tile_checksum = 0):
+        self.empty_tile_bytes = empty_tile_bytes
+        self.empty_tile_checksum = empty_tile_checksum
         self.server_url = server_url
         self.server_api = server_api
         self.zoom = zoom
@@ -82,6 +87,18 @@ class WmsCanvas:
             url = url.replace("{zoom}", str(self.zoom))
             url = url.replace("{x}", str(x))
             url = url.replace("{y}", str(y))
+            url = url.replace("{-y}", str((1 << self.zoom) - 1 - y))
+
+            sw1 = "{switch:"
+            sw2 = url.find(sw1)
+            if sw2 != -1:
+                sw3 = url.find("}", sw2)
+                if sw3 != -1:
+                    sw4 = url[sw2 : sw3 + 1]
+                    sw5 = url[sw2 + len(sw1) : sw3]
+                    sw6 = random.choice(sw5.split(","))
+                    url = url.replace(sw4, sw6)
+
             return url
         elif self.server_api == "wms":
             a, b, c, d = projections.from4326(projections.bbox_by_tile(self.zoom, x, y, self.proj), self.proj)
@@ -145,6 +162,12 @@ class WmsCanvas:
                     continue
 
                 debug("Download took %s sec" % str(clock() - start))
+
+                if len(contents) == self.empty_tile_bytes:
+                    crc32 = binascii.crc32(contents)
+                    if crc32 == self.empty_tile_checksum:
+                        raise Exception('Empty tile found, aborting!')
+
                 try:
                     tile_data = Image.open(io.BytesIO(contents))
 

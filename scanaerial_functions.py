@@ -40,8 +40,8 @@ def point_line_distance(point, startline, endline):
     """
 
     if (startline == endline):
-        return ((startline[0] - endline[0]) ** 2 + \
-                 (startline[1] - endline[1]) ** 2) ** 0.5
+        return ((startline[0] - point[0]) ** 2 + \
+                 (startline[1] - point[1]) ** 2) ** 0.5
     else:
         return abs((endline[0] - startline[0]) * (startline[1] - point[1]) - \
                      (startline[0] - point[0]) * (endline[1] - startline[1])) / \
@@ -67,7 +67,7 @@ def douglas_peucker(nodes, epsilon):
 
     if farthest_dist > epsilon:
         seg_a = douglas_peucker(nodes[0:farthest_node + 1], epsilon)
-        seg_b = douglas_peucker(nodes[farthest_node:-1], epsilon)
+        seg_b = douglas_peucker(nodes[farthest_node:], epsilon)
         nodes = seg_a[:-1] + seg_b
     else:
         return [nodes[0], nodes[-1]]

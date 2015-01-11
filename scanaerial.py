@@ -43,9 +43,15 @@ try:
 
 except ImportError:
     pass
+
+try:
+    CONFIG_NAME = argv[4]
+except IndexError:
+    CONFIG_NAME = "scanaerial.cfg"
+
 try:
     config = configparser.ConfigParser()
-    config.readfp(open(sys.path[0] + '/scanaerial.cfg'))
+    config.readfp(open(sys.path[0] + '/' + CONFIG_NAME))
 except:
     debug('could not read config')
     exit(1)
@@ -59,11 +65,18 @@ except (IndexError, ValueError):
     debug("this program expects latitude longitude, now running debug mode")
     INPUT_LAT = 51.0720147
     INPUT_LON = 7.2181707
+
+FIXED_ZOOM = 11
+if config.has_option('WMS', 'fixedzoomlevel'):
+    FIXED_ZOOM = config.getint('WMS', 'fixedzoomlevel')
+
 try:
     ZOOM = int(float(argv[3]))
 except (IndexError, ValueError):
-    debug("could not read TZoom from commandline, fixed zoom level is used")
-    ZOOM = config.getint('WMS', 'fixedzoomlevel')
+    ZOOM = FIXED_ZOOM
+
+if ZOOM == 0:
+    ZOOM = FIXED_ZOOM
 
 # Coordinates from command string.
 # (format is decimal, for SAS-planet go to Settings and set'em there as --d.
@@ -93,13 +106,21 @@ SERVER_URL = config.get('WMS', 'server_url')
 if SERVER_API == "bing":
     SERVER_URL = bing_img_url(SERVER_URL)
 
+EMPTY_TILE_BYTES = 0
+if config.has_option('WMS', 'empty_tile_bytes'):
+    EMPTY_TILE_BYTES = config.getint('WMS', 'empty_tile_bytes')
+EMPTY_TILE_CHECKSUM = 0
+if config.has_option('WMS', 'empty_tile_checksum'):
+    EMPTY_TILE_CHECKSUM = config.getint('WMS', 'empty_tile_checksum')
+
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
-#FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
+
 WAY_TAGS = {"source:tracer":"scanaerial", \
                     "source:zoomlevel": ZOOM, \
-                    "source:position": SERVER_NAME, \
-                    "natural":"water"} 
+                    "source:position": SERVER_NAME}
+WAY_TAGS = dict(WAY_TAGS.items() + config.items('TAGS'))
+
 POLYGON_TAGS = WAY_TAGS.copy()
 POLYGON_TAGS["type"] = "multipolygon"
 
@@ -109,19 +130,19 @@ DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
 #sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
 colour_str = config.getfloat('SCAN', 'colour_str')
 
-TIMEOUT = 0
-if config.has_option('SCAN', 'timeout'):
-    TIMEOUT = config.getint('SCAN', 'timeout')
+SIZE_LIMIT = 100
+if config.has_option('SCAN', 'size_limit'):
+    SIZE_LIMIT = config.getint('SCAN', 'size_limit')
 
 
 
-web = WmsCanvas(SERVER_URL, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
+web = WmsCanvas(SERVER_URL, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, "RGB", EMPTY_TILE_BYTES, EMPTY_TILE_CHECKSUM)
 
 was_expanded = True
 
 normales_list = []
 
-mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, "1")
 
 ## Getting start pixel ##
 
@@ -137,15 +158,18 @@ ttz = clock()
 normales_list = set([])
 norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
 
-start_time = clock()
 while queue:
-    if TIMEOUT:
-        if clock() - start_time > TIMEOUT:
-            raise Exception('Timeout!')
-
     px = queue.pop()
     for d in DIRECTIONS:
         x1, y1 = px[0] + d[0], px[1] + d[1]
+        if (x - SIZE_LIMIT) > x1:
+            continue
+        if (x + SIZE_LIMIT) < x1:
+            continue
+        if (y - SIZE_LIMIT) > y1:
+            continue
+        if (y + SIZE_LIMIT) < y1:
+            continue
         if mask[x1, y1] is not WHITE:
             col = web[x1, y1]
             if col not in colour_table:
@@ -167,7 +191,7 @@ mask.MaxFilter(config.getint('SCAN', 'maxfilter_setting'))
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 del web
 oldmask = mask
-mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, "1")
 bc = 1
 ttz = clock()
 
@@ -224,10 +248,9 @@ while normales_list:
         popped = False
         
         if not config.getint('SCAN', 'deactivate_simplifying'):
+            lin.append(lin[0])
             lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
-            if len(lin) >= 2:
-                if lin[len(lin) - 1] == lin[len(lin) - 2]:
-                    lin.pop()
+            lin.pop()
             debug("line found; simplified to %s" % len(lin))
         else:
             debug("skipped simplifing")
@@ -237,11 +260,14 @@ while normales_list:
         lin = []
 
 if lin:
-    lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
-    if len(lin) >= 2:
-        if lin[len(lin) - 1] == lin[len(lin) - 2]:
-            lin.pop()
-    debug("line post-found; simplified to %s" % len(lin))
+    if not config.getint('SCAN', 'deactivate_simplifying'):
+        lin.append(lin[0])
+        lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
+        lin.pop()
+        debug("line post-found; simplified to %s" % len(lin))
+    else:
+        debug("skipped simplifing")
+
     if len(lin) >= 4:
         outline.append(lin)
 
