@@ -5,6 +5,14 @@
    
 * Features/Changelog
 
+** 2.1-beta-1
+ - Bing support merged in. Thanks to Cybjit and IrlJidel
+ - Improved TMS support ({-y} and {switch:} options added)
+ - Timeout check replaced by size limit feature: now it is possible to trace rivers
+ - Tags settings moved to configuration file
+ - Fixed bugs in Douglas-Peucker algorithm
+ - Empty tiles detection added
+
 ** 2.0-beta.1
  - TMS support added, new timeout check. Thanks to Vort
  
