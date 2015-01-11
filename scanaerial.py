@@ -35,7 +35,7 @@ from time import clock
 from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
 from debug import debug
-from scanaerial_functions import distance, point_line_distance, douglas_peucker
+from scanaerial_functions import distance, point_line_distance, douglas_peucker, bing_img_url
 
 try:
     import psyco
@@ -76,23 +76,29 @@ BLACK = 0
 WHITE = 1
 PROGRAM_START_TIMESTAMP = clock()
 
-if config.has_option('WMS', 'wms_server_url') and config.has_option('WMS', 'wmsname'):
-	TMS = 0
-	MS_NAME = config.get('WMS', 'wmsname')
-	MS_SERVER_URL = config.get('WMS', 'wms_server_url')
-elif config.has_option('WMS', 'tms_server_url') and config.has_option('WMS', 'tmsname'):
-	TMS = 1
-	MS_NAME = config.get('WMS', 'tmsname')
-	MS_SERVER_URL = config.get('WMS', 'tms_server_url')
-else:
-	raise Exception('(wms_server_url and wmsname) or (tms_server_url and tmsname) must be specified')
+if not config.has_option('WMS', 'server_api'):
+    raise Exception('server_api must be specified')
+if not config.has_option('WMS', 'server_name'):
+    raise Exception('server_name must be specified')
+if not config.has_option('WMS', 'server_url'):
+    raise Exception('server_url must be specified')
+
+SERVER_API = config.get('WMS', 'server_api')
+if (SERVER_API != "wms") and (SERVER_API != "tms") and (SERVER_API != "bing"):
+    raise Exception('server_api must be one of: wms, tms, bing')
+
+SERVER_NAME = config.get('WMS', 'server_name')
+SERVER_URL = config.get('WMS', 'server_url')
+
+if SERVER_API == "bing":
+    SERVER_URL = bing_img_url(SERVER_URL)
 
 PROJECTION = config.get('WMS', 'projection')
 TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
 #FIXME natural:water should go to .cfg NODES but how? It would be nice if the user could expand it for more keys.
 WAY_TAGS = {"source:tracer":"scanaerial", \
                     "source:zoomlevel": ZOOM, \
-                    "source:position": MS_NAME, \
+                    "source:position": SERVER_NAME, \
                     "natural":"water"} 
 POLYGON_TAGS = WAY_TAGS.copy()
 POLYGON_TAGS["type"] = "multipolygon"
@@ -109,13 +115,13 @@ if config.has_option('SCAN', 'timeout'):
 
 
 
-web = WmsCanvas(MS_SERVER_URL, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
+web = WmsCanvas(SERVER_URL, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "RGB")
 
 was_expanded = True
 
 normales_list = []
 
-mask = WmsCanvas(None, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 
 ## Getting start pixel ##
 
@@ -135,7 +141,7 @@ start_time = clock()
 while queue:
     if TIMEOUT:
         if clock() - start_time > TIMEOUT:
-		    raise Exception('Timeout!')
+            raise Exception('Timeout!')
 
     px = queue.pop()
     for d in DIRECTIONS:
@@ -161,7 +167,7 @@ mask.MaxFilter(config.getint('SCAN', 'maxfilter_setting'))
 debug("B/W MaxFilter: %s" % str(clock() - ttz))
 del web
 oldmask = mask
-mask = WmsCanvas(None, TMS, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
+mask = WmsCanvas(None, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, mode = "1")
 bc = 1
 ttz = clock()
 
@@ -219,6 +225,9 @@ while normales_list:
         
         if not config.getint('SCAN', 'deactivate_simplifying'):
             lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
+            if len(lin) >= 2:
+                if lin[len(lin) - 1] == lin[len(lin) - 2]:
+                    lin.pop()
             debug("line found; simplified to %s" % len(lin))
         else:
             debug("skipped simplifing")
@@ -229,6 +238,9 @@ while normales_list:
 
 if lin:
     lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
+    if len(lin) >= 2:
+        if lin[len(lin) - 1] == lin[len(lin) - 2]:
+            lin.pop()
     debug("line post-found; simplified to %s" % len(lin))
     if len(lin) >= 4:
         outline.append(lin)
