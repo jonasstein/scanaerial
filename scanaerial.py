@@ -1,20 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# This program is free software; you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 3 of the License.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-
 """
+This program is free software; you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation; either version 3 of the License.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program; if not, write to the Free Software
+Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+
 This script will search an area with similar color and send
 it back to JOSM
 """
@@ -83,7 +83,6 @@ if ZOOM == 0:
 # You can use SAS-Planet: click right mouse button on center of forest.
 
 
-
 # SET SOME CONSTANTS
 BLACK = 0
 WHITE = 1
@@ -114,20 +113,21 @@ if config.has_option('WMS', 'empty_tile_checksum'):
     EMPTY_TILE_CHECKSUM = config.getint('WMS', 'empty_tile_checksum')
 
 PROJECTION = config.get('WMS', 'projection')
-TILE_SIZE = (config.getint('WMS', 'tile_sizex'), config.getint('WMS', 'tile_sizey'))
+TILE_SIZE = (config.getint('WMS', 'tile_sizex'),
+             config.getint('WMS', 'tile_sizey'))
 
-WAY_TAGS = {"source:tracer":"scanaerial", \
-                    "source:zoomlevel": ZOOM, \
-                    "source:position": SERVER_NAME}
+WAY_TAGS = {"source:tracer": "scanaerial",
+            "source:zoomlevel": ZOOM,
+            "source:position": SERVER_NAME}
 WAY_TAGS = dict(WAY_TAGS.items() + config.items('TAGS'))
 
 POLYGON_TAGS = WAY_TAGS.copy()
 POLYGON_TAGS["type"] = "multipolygon"
 
-#smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
-DOUGLAS_PEUCKER_EPSILON =  config.getfloat('SCAN', 'douglas_peucker_epsilon')
+# smoothness of way, bigger = less dots and turns = 0.6-1.3 is ok
+DOUGLAS_PEUCKER_EPSILON = config.getfloat('SCAN', 'douglas_peucker_epsilon')
 
-#sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
+# sensivity for colour change, bigger = larger area covered = 20-23-25 is ok
 colour_str = config.getfloat('SCAN', 'colour_str')
 
 SIZE_LIMIT = 100
@@ -135,8 +135,8 @@ if config.has_option('SCAN', 'size_limit'):
     SIZE_LIMIT = config.getint('SCAN', 'size_limit')
 
 
-
-web = WmsCanvas(SERVER_URL, SERVER_API, PROJECTION, ZOOM, TILE_SIZE, "RGB", EMPTY_TILE_BYTES, EMPTY_TILE_CHECKSUM)
+web = WmsCanvas(SERVER_URL, SERVER_API, PROJECTION, ZOOM,
+                TILE_SIZE, "RGB", EMPTY_TILE_BYTES, EMPTY_TILE_CHECKSUM)
 
 was_expanded = True
 
@@ -156,7 +156,7 @@ queue = set([(x, y), ])
 mask[x, y] = WHITE
 ttz = clock()
 normales_list = set([])
-norm_dir = {(0, -1):0, (1, 0):1, (0, 1):2, (-1, 0):3}
+norm_dir = {(0, -1): 0, (1, 0): 1, (0, 1): 2, (-1, 0): 3}
 
 while queue:
     px = queue.pop()
@@ -174,7 +174,8 @@ while queue:
             col = web[x1, y1]
             if col not in colour_table:
                 try:
-                    colour_table[col] = (distance(INITCOLOUR, col) <= colour_str)
+                    colour_table[col] = (
+                        distance(INITCOLOUR, col) <= colour_str)
                 except:
                     debug(web.tiles)
                     debug(mask.tiles)
@@ -204,9 +205,9 @@ while queue:
             bc += 1
             queue.append((x1, y1))
         if oldmask[x1, y1] is not WHITE:
-            normales_list.add(((x1 + px[0]) / 2., \
-                                (y1 + px[1]) / 2., \
-                                  norm_dir[px[0] - x1, px[1] - y1]))
+            normales_list.add(((x1 + px[0]) / 2.,
+                               (y1 + px[1]) / 2.,
+                               norm_dir[px[0] - x1, px[1] - y1]))
 debug("Found %s normales here." % len(normales_list))
 debug("Second walk (leaving only poly): %s" % str(clock() - ttz))
 
@@ -228,7 +229,7 @@ while normales_list:
         lin = [(x, y), ]
         popped = True
     found = False
-    if d is 0: #up-pointing vector
+    if d is 0:  # up-pointing vector
         search = [(x + 0.5, y - 0.5, 3), (x + 1, y, 0), (x + 0.5, y + 0.5, 1)]
     if d is 1:
         search = [(x + 0.5, y + 0.5, 0), (x, y + 1, 1), (x - 0.5, y + 0.5, 2)]
@@ -246,7 +247,7 @@ while normales_list:
 
     if not found:
         popped = False
-        
+
         if not config.getint('SCAN', 'deactivate_simplifying'):
             lin.append(lin[0])
             lin = douglas_peucker(lin, DOUGLAS_PEUCKER_EPSILON)
@@ -285,7 +286,8 @@ for lin in outline:
 
         node_num -= 1
         lon, lat = oldmask.PixelAs4326(x, y)
-        stdout.write('<node id="%s" lon="%s" lat="%s" version="1" />' % (node_num, lon, lat))  
+        stdout.write('<node id="%s" lon="%s" lat="%s" version="1" />' %
+                     (node_num, lon, lat))
 
     way_num -= 1
     roles[way_num] = (area > 0)
