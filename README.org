@@ -1,6 +1,6 @@
 * scanaerial
  - Scan for areas of similar colour on aerial pictures like OCR for text.
- - recognition works well with lakes it will not produce good results with
+ - recognition works well with lakes, however it will not produce good results with
    wood in near future.
    
 * Features/Changelog
