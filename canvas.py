@@ -14,6 +14,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
+from builtins import object
+from past.utils import old_div
 if __name__ == "__main__":
     exit(0)
 
@@ -23,9 +30,9 @@ try:
     from urllib.error import URLError
     from urllib.error import HTTPError
 except ImportError:
-    from urllib2 import urlopen
-    from urllib2 import URLError
-    from urllib2 import HTTPError
+    from urllib.request import urlopen
+    from urllib.error import URLError
+    from urllib.error import HTTPError
 import io
 import datetime
 import sys
@@ -38,7 +45,7 @@ import projections
 
 time_str = {0:" first ", 1:" second ", 2:" third and last "}
 
-class WmsCanvas:
+class WmsCanvas(object):
 
     def __init__(self, server_url = None, server_api = None, proj = "EPSG:4326", zoom = 4, \
                  tile_size = None, mode = "RGBA", empty_tile_bytes = 0, empty_tile_checksum = 0):
@@ -195,7 +202,7 @@ class WmsCanvas:
         scale = 1.0
         if (self.server_api == "tms") or (self.server_api == "bing"):
             scale = 0.5
-        return projections.coords_by_tile(self.zoom, scale * x / self.tile_width, scale * y / self.tile_height, self.proj)
+        return projections.coords_by_tile(self.zoom, old_div(scale * x, self.tile_width), old_div(scale * y, self.tile_height), self.proj)
 
     def PixelFrom4326(self, lon, lat):
         scale = 1.0

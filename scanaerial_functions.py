@@ -14,13 +14,18 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
+from __future__ import division
+from future import standard_library
+standard_library.install_aliases()
+from builtins import range
+from past.utils import old_div
 if __name__ == "__main__":
     exit(0)
 
 try:
     from urllib.request import urlopen
 except ImportError:
-    from urllib2 import urlopen
+    from urllib.request import urlopen
 import xml.etree.ElementTree as ElementTree
 from sys import setrecursionlimit
 setrecursionlimit(1500000)    
@@ -43,9 +48,9 @@ def point_line_distance(point, startline, endline):
         return ((startline[0] - point[0]) ** 2 + \
                  (startline[1] - point[1]) ** 2) ** 0.5
     else:
-        return abs((endline[0] - startline[0]) * (startline[1] - point[1]) - \
-                     (startline[0] - point[0]) * (endline[1] - startline[1])) / \
-                      ((endline[0] - startline[0]) ** 2 + (endline[1] - startline[1]) ** 2) ** 0.5
+        return old_div(abs((endline[0] - startline[0]) * (startline[1] - point[1]) - \
+                     (startline[0] - point[0]) * (endline[1] - startline[1])), \
+                      ((endline[0] - startline[0]) ** 2 + (endline[1] - startline[1]) ** 2) ** 0.5)
                       
 def douglas_peucker(nodes, epsilon):
     """
