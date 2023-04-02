@@ -5,6 +5,10 @@
 
 * Features/Changelog
 
+** 3.0 2023-04-02
+ - Python 3 migration thanks to taranarmo
+ - Code clean up thanks to taranarmo
+
 ** 2.1-beta-1
  - Bing support merged in. Thanks to Cybjit and IrlJidel
  - Improved TMS support ({-y} and {switch:} options added)
