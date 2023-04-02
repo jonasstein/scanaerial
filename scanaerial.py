@@ -24,7 +24,6 @@ from future import standard_library
 standard_library.install_aliases()
 from builtins import str
 from builtins import range
-from past.utils import old_div
 __author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W., Vort"
 __license__ = "GPL"
 __credits__ = ["Lakewalker-developer-Team", "JOSM-developer-Team", "Malenki"]
@@ -286,7 +285,7 @@ for lin in outline:
     prx, pry = lin[-1]
 
     for x, y in lin:
-        area += old_div((x * pry - y * prx), 2)
+        area += (x * pry - y * prx) * 1.0 / 2
         prx = x
         pry = y
 

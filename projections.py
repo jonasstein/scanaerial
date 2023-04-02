@@ -15,7 +15,6 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
 from __future__ import division
-from past.utils import old_div
 if __name__ == "__main__":
     exit(0)
 
@@ -65,7 +64,7 @@ def coords_by_tile(z, x, y, srs):
     Converts (z,x,y) to coordinates of corner of srs-projected tile
     """
     z -= 1
-    normalized_tile = (old_div(x, (2. ** z)), 1. - (old_div(y, (2. ** z))))
+    normalized_tile = (x * 1.0 / (2. ** z), 1. - (y * 1.0 / (2. ** z)))
     projected_bounds = from4326(projs[proj_alias.get(srs, srs)]["bounds"], srs)
     maxp = [projected_bounds[2] - projected_bounds[0], projected_bounds[3] - projected_bounds[1]]
     projected_coords = [(normalized_tile[0] * maxp[0]) + projected_bounds[0], (normalized_tile[1] * maxp[1]) + projected_bounds[1]]

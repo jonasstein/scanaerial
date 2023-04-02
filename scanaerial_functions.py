@@ -18,7 +18,6 @@ from __future__ import division
 from future import standard_library
 standard_library.install_aliases()
 from builtins import range
-from past.utils import old_div
 if __name__ == "__main__":
     exit(0)
 
@@ -48,9 +47,9 @@ def point_line_distance(point, startline, endline):
         return ((startline[0] - point[0]) ** 2 + \
                  (startline[1] - point[1]) ** 2) ** 0.5
     else:
-        return old_div(abs((endline[0] - startline[0]) * (startline[1] - point[1]) - \
-                     (startline[0] - point[0]) * (endline[1] - startline[1])), \
-                      ((endline[0] - startline[0]) ** 2 + (endline[1] - startline[1]) ** 2) ** 0.5)
+        return abs((endline[0] - startline[0]) * (startline[1] - point[1]) - \
+                     (startline[0] - point[0]) * (endline[1] - startline[1])) * 1.0 / \
+                      ((endline[0] - startline[0]) ** 2 + (endline[1] - startline[1]) ** 2) ** 0.5
                       
 def douglas_peucker(nodes, epsilon):
     """

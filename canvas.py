@@ -20,7 +20,6 @@ standard_library.install_aliases()
 from builtins import str
 from builtins import range
 from builtins import object
-from past.utils import old_div
 if __name__ == "__main__":
     exit(0)
 
@@ -202,7 +201,7 @@ class WmsCanvas(object):
         scale = 1.0
         if (self.server_api == "tms") or (self.server_api == "bing"):
             scale = 0.5
-        return projections.coords_by_tile(self.zoom, old_div(scale * x, self.tile_width), old_div(scale * y, self.tile_height), self.proj)
+        return projections.coords_by_tile(self.zoom, scale * x * 1.0 / self.tile_width, scale * y * 1.0 / self.tile_height, self.proj)
 
     def PixelFrom4326(self, lon, lat):
         scale = 1.0
