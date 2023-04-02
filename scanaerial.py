@@ -18,7 +18,12 @@ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 This script will search an area with similar color and send
 it back to JOSM
 """
+from __future__ import division
 
+from future import standard_library
+standard_library.install_aliases()
+from builtins import str
+from builtins import range
 __author__ = "Darafei Praliaskouski, Jonas Stein, Ruben W., Vort"
 __license__ = "GPL"
 __credits__ = ["Lakewalker-developer-Team", "JOSM-developer-Team", "Malenki"]
@@ -29,9 +34,9 @@ __status__ = "Development"
 try:
     import configparser
 except ImportError:
-    import ConfigParser as configparser
+    import configparser as configparser
 import sys
-from time import clock
+from time import process_time as clock
 from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
 from debug import debug
@@ -119,7 +124,7 @@ TILE_SIZE = (config.getint('WMS', 'tile_sizex'),
 WAY_TAGS = {"source:tracer": "scanaerial",
             "source:zoomlevel": ZOOM,
             "source:position": SERVER_NAME}
-WAY_TAGS = dict(WAY_TAGS.items() + config.items('TAGS'))
+WAY_TAGS = dict(list(WAY_TAGS.items()) + config.items('TAGS'))
 
 POLYGON_TAGS = WAY_TAGS.copy()
 POLYGON_TAGS["type"] = "multipolygon"
@@ -229,13 +234,13 @@ while normales_list:
         lin = [(x, y), ]
         popped = True
     found = False
-    if d is 0:  # up-pointing vector
+    if d == 0:  # up-pointing vector
         search = [(x + 0.5, y - 0.5, 3), (x + 1, y, 0), (x + 0.5, y + 0.5, 1)]
-    if d is 1:
+    if d == 1:
         search = [(x + 0.5, y + 0.5, 0), (x, y + 1, 1), (x - 0.5, y + 0.5, 2)]
-    if d is 2:
+    if d == 2:
         search = [(x - 0.5, y + 0.5, 1), (x - 1, y, 2), (x - 0.5, y - 0.5, 3)]
-    if d is 3:
+    if d == 3:
         search = [(x - 0.5, y - 0.5, 2), (x, y - 1, 3), (x + 0.5, y - 0.5, 0)]
     for kp in search:
         if kp in normales_list:
@@ -280,7 +285,7 @@ for lin in outline:
     prx, pry = lin[-1]
 
     for x, y in lin:
-        area += (x * pry - y * prx) / 2
+        area += (x * pry - y * prx) * 1.0 / 2
         prx = x
         pry = y
 
@@ -296,7 +301,7 @@ for lin in outline:
         stdout.write('<nd ref="%s" />' % (y))
     stdout.write('<nd ref="%s" />' % (node_num))
     if len(outline) == 1:
-        for z in WAY_TAGS.items():
+        for z in list(WAY_TAGS.items()):
             stdout.write(' <tag k="%s" v="%s" />"' % z)
     stdout.write("</way>")
 
@@ -306,7 +311,7 @@ if way_num < -1:
         role = ("inner", "outer")[int(roles[y])]
         stdout.write('<member type="way" ref="%s" role="%s" />' % (y, role))
 
-    for z in POLYGON_TAGS.items():
+    for z in list(POLYGON_TAGS.items()):
         stdout.write(' <tag k="%s" v="%s" />"' % z)
 
     stdout.write('</relation>')
@@ -317,7 +322,7 @@ debug("All done in: %s" % str(clock() - PROGRAM_START_TIMESTAMP))
 
 
 """ TODO
-* Zoomlevel to the source? May be soon there are higher resolutions and on different 
+* Zoomlevel to the source? May be soon there are higher resolutions and on different
   zoomlevels things look quite different
 
 """

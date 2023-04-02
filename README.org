@@ -2,7 +2,7 @@
  - Scan for areas of similar colour on aerial pictures like OCR for text.
  - recognition works well with lakes, however it will not produce good results with
    wood in near future.
-   
+
 * Features/Changelog
 
 ** 2.1-beta-1
@@ -15,12 +15,12 @@
 
 ** 2.0-beta.1
  - TMS support added, new timeout check. Thanks to Vort
- 
+
 ** 1.0.3
  - malenki et al. reported that latlon.org does not work at the moment/anymore (?)
    geoposer.com is another bing WMS server, but somone has to figure out how to use it with scanaerial.
    Till then it is possible to use landsat with
-   wms_server_url = http://irs.gis-lab.info/?layers=landsat& 
+   wms_server_url = http://irs.gis-lab.info/?layers=landsat&
 
 ** 1.0.2
  - added tag source:zoomlevel. You see sometimes very different details
@@ -31,20 +31,20 @@
 
 ** 1.0.0
  - TMS Zoomlevel of JOSM is used for the downloaded WMS Tiles
- - scanaerial works with Ext_tools Plugin 
+ - scanaerial works with Ext_tools Plugin
 
 * Requirements
  - JOSM
  - Python. You can run library_check.py to find out if a library is missing
- - Ext_tools plug-in for JOSM. 
-   {TZoom} is part of Ext_tools since Ext_tools 25274 
+ - Ext_tools plug-in for JOSM.
+   {TZoom} is part of Ext_tools since Ext_tools 25274
  - Of course you need the scanaerial files too.
    You will find the latest releases on
    [[https://github.com/jonasstein/scanaerial/archives/master]]
    Copy them to JOSM/plugins/scanaerial for example.
 
 * Setup
- - unzip the contents of the downloaded archive to the JOSM plugin directory 
+ - unzip the contents of the downloaded archive to the JOSM plugin directory
    Linux users put it to: ~/.josm/plugins/ext_tools/scanaerial
  - start JOSM, press F12 and go to Ext_tools configuration
  - use this cmdline:/home/<username>/.josm/plugins/ext_tools/scanaerial/scanaerial.py {lat} {lon} {TZoom}
@@ -71,22 +71,22 @@
 * Roadmap
  - collect recipies for better algorithms
  - try to exclude douglas-peucker from scanaerial. josm can do that.
- - try different algorithms in forks and compare them. 
+ - try different algorithms in forks and compare them.
  - try to access cached wms tiles from josm
  - rewrite in c(++) and/or java
  - find betatester
 * Troubleshooting
- - if anything fails have a look on the error console. 
+ - if anything fails have a look on the error console.
    Scanaerial is very verbous.
 
 * Found a bug?
  - [[https://github.com/jonasstein/scanaerial/issues]]
- - if you want to contribute, please 
-   make a fork, 
+ - if you want to contribute, please
+   make a fork,
    make your changes in the fork
    do a pull request on this project site, or contact the author
 
-* Links 
+* Links
  - [[http://wiki.openstreetmap.org/wiki/Scanaerial][OSM Wiki about scanaerial]]
-   
+
 * Have fun!

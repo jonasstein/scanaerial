@@ -17,6 +17,7 @@
 """
 Use this to detect missing libaries which are needed by scanaerial.
 """
+from __future__ import print_function
 
 import sys
 from debug import debug
@@ -42,5 +43,5 @@ except ImportError:
 
 if check:
     print("Everthing works fine, you may run scanaerial now.")
-    
+
 sleep(5)
