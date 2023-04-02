@@ -37,7 +37,7 @@ try:
 except ImportError:
     import configparser as configparser
 import sys
-from time import clock
+from time import process_time as clock
 from sys import argv, stdout, setrecursionlimit
 from canvas import WmsCanvas
 from debug import debug

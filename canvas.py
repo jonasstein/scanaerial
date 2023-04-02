@@ -38,7 +38,7 @@ import datetime
 import sys
 import random
 import binascii
-from time import clock
+from time import process_time as clock
 from debug import debug
 #
 import projections
