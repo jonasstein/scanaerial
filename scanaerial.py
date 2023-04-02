@@ -234,13 +234,13 @@ while normales_list:
         lin = [(x, y), ]
         popped = True
     found = False
-    if d is 0:  # up-pointing vector
+    if d == 0:  # up-pointing vector
         search = [(x + 0.5, y - 0.5, 3), (x + 1, y, 0), (x + 0.5, y + 0.5, 1)]
-    if d is 1:
+    if d == 1:
         search = [(x + 0.5, y + 0.5, 0), (x, y + 1, 1), (x - 0.5, y + 0.5, 2)]
-    if d is 2:
+    if d == 2:
         search = [(x - 0.5, y + 0.5, 1), (x - 1, y, 2), (x - 0.5, y - 0.5, 3)]
-    if d is 3:
+    if d == 3:
         search = [(x - 0.5, y - 0.5, 2), (x, y - 1, 3), (x + 0.5, y - 0.5, 0)]
     for kp in search:
         if kp in normales_list:
