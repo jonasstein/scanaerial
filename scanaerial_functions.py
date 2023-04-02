@@ -27,14 +27,14 @@ except ImportError:
     from urllib.request import urlopen
 import xml.etree.ElementTree as ElementTree
 from sys import setrecursionlimit
-setrecursionlimit(1500000)    
-    
+setrecursionlimit(1500000)
+
 def distance(a, b):
     """
     Euclidean metric
     """
     return  ((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2) ** 0.5
-    
+
 def point_line_distance(point, startline, endline):
     """
     check if the "line" is actually a point
@@ -50,14 +50,14 @@ def point_line_distance(point, startline, endline):
         return abs((endline[0] - startline[0]) * (startline[1] - point[1]) - \
                      (startline[0] - point[0]) * (endline[1] - startline[1])) * 1.0 / \
                       ((endline[0] - startline[0]) ** 2 + (endline[1] - startline[1]) ** 2) ** 0.5
-                      
+
 def douglas_peucker(nodes, epsilon):
     """
     makes a linear curve smoother see also
     http://en.wikipedia.org/wiki/Ramer-Douglas-Peucker_algorithm
     Copypasted from lakewalker
     """
-    
+
     farthest_node = None
     farthest_dist = 0
     first = nodes[0]

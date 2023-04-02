@@ -322,7 +322,7 @@ debug("All done in: %s" % str(clock() - PROGRAM_START_TIMESTAMP))
 
 
 """ TODO
-* Zoomlevel to the source? May be soon there are higher resolutions and on different 
+* Zoomlevel to the source? May be soon there are higher resolutions and on different
   zoomlevels things look quite different
 
 """

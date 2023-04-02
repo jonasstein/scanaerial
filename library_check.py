@@ -43,5 +43,5 @@ except ImportError:
 
 if check:
     print("Everthing works fine, you may run scanaerial now.")
-    
+
 sleep(5)

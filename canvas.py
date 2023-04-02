@@ -119,21 +119,21 @@ class WmsCanvas(object):
     def ConstructQuadkey (self, tileX, tileY):
         """return Bing quadkey for given integer tile
         see (http://msdn.microsoft.com/en-us/library/bb259689.aspx)"""
-        
+
         tileX2 = self.baseN(tileX, 2)
         tileY2 = self.baseN(tileY, 2)
-        
+
         pad = self.zoom
-        
+
         tileX2 = "0"*(pad - len(tileX2)) + tileX2
         tileY2 = "0"*(pad - len(tileY2)) + tileY2
-        
+
         quadkey2 = ""
         for x in range(pad):
             quadkey2 = quadkey2 + tileY2[x] + tileX2[x]
-        
+
         quadkey = int(quadkey2, 2)
-        
+
         quadkey4 = self.baseN(quadkey, 4)
         quadkey4_pad = "0"*(pad - len(str(quadkey4))) + str(quadkey4)
 
@@ -154,7 +154,7 @@ class WmsCanvas(object):
             for dl_retrys in range(0, 3):
                 try:
                     contents = urlopen(remote).read()
-                    
+
                 except URLError as detail:
                     server_error = True
                     debug("error while fetching tile (" + str(x) + ", " + str(y) + ": " + str(detail))
@@ -183,7 +183,7 @@ class WmsCanvas(object):
                     continue
                 dl_done = True
                 break
-        
+
         if not dl_done:
             if server_error:
                 raise URLError(detail)
@@ -195,7 +195,7 @@ class WmsCanvas(object):
         self.tiles[(x, y)] = {}
         self.tiles[(x, y)]["im"] = tile_data
         self.tiles[(x, y)]["pix"] = tile_data.load()
-        
+
 
     def PixelAs4326(self, x, y):
         scale = 1.0
