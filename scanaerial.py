@@ -56,7 +56,7 @@ except IndexError:
 
 try:
     config = configparser.ConfigParser()
-    config.readfp(open(sys.path[0] + '/' + CONFIG_NAME))
+    config.read_file(open(sys.path[0] + '/' + CONFIG_NAME))
 except:
     debug('could not read config')
     exit(1)
