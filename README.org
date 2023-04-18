@@ -54,7 +54,8 @@
  - use this cmdline:/home/<username>/.josm/plugins/ext_tools/scanaerial/scanaerial.py {lat} {lon} {TZoom}
    It will create a new menu item in JOSM. (NB: Syntax may change soon)
    Due to a bug in Ext_tools you can not write "~" instead of "home"
- - For best result you may finetune the values in scanaerial.cfg
+ - You can provide configuration file as after TZoom argument, if not provided scanaerial.cfg will be used
+ - For best result you may finetune the values in config file
 
  | key                     | function                                                  |
  |-------------------------+-----------------------------------------------------------|
