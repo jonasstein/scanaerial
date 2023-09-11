@@ -93,5 +93,6 @@
 
 * Links
  - [[http://wiki.openstreetmap.org/wiki/Scanaerial][OSM Wiki about scanaerial]]
+ - [[https://github.com/developmentseed/JosmMagicWand][JosmMagicWand]]
 
 * Have fun!
